@@ -1,0 +1,45 @@
+name: deployment
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+      - staging
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env: 
+      DATABASE_URL: 'mongodb://localhost:27017/?replicaSet=replica-set'
+      DATABASE_NAME: 'test_db'
+    strategy:
+      matrix:
+        mongodb-version: ['6.0', '7.0']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - uses: oven-sh/setup-bun@v1
+  
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-replica-set: replica-set
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      # Install deps
+      - run: bun install --frozen-lock
+      # Run Test
+      - run: bun test

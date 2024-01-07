@@ -1,0 +1,12 @@
+# node modules
+node_modules
+
+# test coverage directory
+coverage
+
+# envorinment variable
+.env
+.env.test
+
+# tsconfig buildinfo
+tsconfig.tsbuildinfo
