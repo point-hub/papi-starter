@@ -17,6 +17,7 @@ export const makeWebSocketServer = async (port: number, publisher: RedisClientTy
   const webSocketServer = Bun.serve({
     port: port,
     fetch(req, server) {
+      console.log(req, server)
       const sessionId = uuidv4()
       const url = new URL(req.url)
       if (
@@ -29,8 +30,10 @@ export const makeWebSocketServer = async (port: number, publisher: RedisClientTy
           },
         })
       ) {
+        console.log('websocket connected')
         return undefined
       }
+      console.log('websocket error')
       return new Response('Websocket Server Error', { status: 500 })
     },
     websocket: {
