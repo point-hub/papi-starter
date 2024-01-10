@@ -3,9 +3,9 @@ import redisConfig from './config/redis'
 import serverConfig from './config/server'
 import websocketConfig from './config/websocket'
 import { dbConnection } from './database/database'
-import { RedisClient } from './redis'
 import { createServer } from './server'
-import { makeWebSocketServer } from './websocket'
+import { RedisClient } from './utils/redis'
+import { makeWebSocketServer } from './utils/websocket'
 
 /**
  * Create database connection. It will keep the connection open by default,
