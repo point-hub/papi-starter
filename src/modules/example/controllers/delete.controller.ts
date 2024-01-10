@@ -1,6 +1,6 @@
 import type { IController, IControllerInput } from '@point-hub/papi'
 
-import { schemaValidation } from '@/validation'
+import { schemaValidation } from '@/utils/validation'
 
 import { DeleteRepository } from '../repositories/delete.repository'
 import { DeleteExampleUseCase } from '../use-cases/delete.use-case'

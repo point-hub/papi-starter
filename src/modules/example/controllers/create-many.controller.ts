@@ -1,7 +1,7 @@
 import { objClean } from '@point-hub/express-utils'
 import type { IController, IControllerInput } from '@point-hub/papi'
 
-import { schemaValidation } from '@/validation'
+import { schemaValidation } from '@/utils/validation'
 
 import { CreateManyRepository } from '../repositories/create-many.repository'
 import { CreateManyExampleUseCase } from '../use-cases/create-many.use-case'
