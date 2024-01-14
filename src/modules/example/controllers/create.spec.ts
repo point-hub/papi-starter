@@ -30,11 +30,13 @@ describe('create an example', async () => {
     const response = await request(app).post('/v1/examples').send(data)
 
     // expect http response
-    expect(response.statusCode).toEqual(400)
+    expect(response.statusCode).toEqual(422)
     // expect response json
-    expect(response.body.code).toStrictEqual(400)
-    expect(response.body.status).toStrictEqual('Bad Request')
-    expect(response.body.message).toStrictEqual('The server cannot process the request.')
+    expect(response.body.code).toStrictEqual(422)
+    expect(response.body.status).toStrictEqual('Unprocessable Entity')
+    expect(response.body.message).toStrictEqual(
+      'The request was well-formed but was unable to be followed due to semantic errors.',
+    )
     expect(response.body.errors).toStrictEqual({
       name: ['The name is exists.'],
     })
