@@ -1,6 +1,5 @@
-import { jsonParse, jsonStringify } from '@point-hub/express-utils'
+import { jsonParse, jsonStringify, tokenGenerate } from '@point-hub/express-utils'
 import { type RedisClientType } from 'redis'
-import { v4 as uuidv4 } from 'uuid'
 
 interface IData {
   topic: string
@@ -18,7 +17,7 @@ export const makeWebSocketServer = async (port: number, publisher: RedisClientTy
     port: port,
     fetch(req, server) {
       console.log(req, server)
-      const sessionId = uuidv4()
+      const sessionId = tokenGenerate()
       const url = new URL(req.url)
       if (
         server.upgrade(req, {
