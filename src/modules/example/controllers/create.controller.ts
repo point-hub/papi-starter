@@ -13,12 +13,13 @@ export const createExampleController: IController = async (controllerInput: ICon
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const repository = new CreateRepository(controllerInput.dbConnection)
+    const createRepository = new CreateRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const response = await new CreateExampleUseCase(repository).handle(
+    const response = await CreateExampleUseCase.handle(
       controllerInput.httpRequest.body,
       {
         cleanObject: objClean,
+        createRepository,
         schemaValidation,
       },
       { session },

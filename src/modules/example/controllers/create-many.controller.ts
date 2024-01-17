@@ -13,11 +13,11 @@ export const createManyExampleController: IController = async (controllerInput: 
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const repository = new CreateManyRepository(controllerInput.dbConnection)
+    const createManyRepository = new CreateManyRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const response = await new CreateManyExampleUseCase(repository).handle(
+    const response = await CreateManyExampleUseCase.handle(
       controllerInput.httpRequest.body,
-      { cleanObject: objClean, schemaValidation },
+      { cleanObject: objClean, schemaValidation, createManyRepository },
       { session },
     )
     await session.commitTransaction()

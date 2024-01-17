@@ -30,19 +30,21 @@ export const transactionExampleController: IController = async (controllerInput:
     const deleteRepository = new DeleteRepository(controllerInput.dbConnection)
     const deleteManyRepository = new DeleteManyRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const responseCreate = await new CreateExampleUseCase(createRepository).handle(
+    const responseCreate = await CreateExampleUseCase.handle(
       controllerInput.httpRequest.body.new,
       {
         cleanObject: objClean,
+        createRepository,
         schemaValidation,
       },
       { session },
     )
     // 3.1. create
-    await new CreateExampleUseCase(createRepository).handle(
+    await CreateExampleUseCase.handle(
       controllerInput.httpRequest.body.create,
       {
         cleanObject: objClean,
+        createRepository,
         schemaValidation,
       },
       { session },
@@ -50,10 +52,11 @@ export const transactionExampleController: IController = async (controllerInput:
     await session.commitTransaction()
     session.startTransaction()
     // 3.2. create many
-    const responseCreateMany = await new CreateManyExampleUseCase(createManyRepository).handle(
+    const responseCreateMany = await CreateManyExampleUseCase.handle(
       controllerInput.httpRequest.body.createMany,
       {
         cleanObject: objClean,
+        createManyRepository,
         schemaValidation,
       },
       { session },
@@ -61,7 +64,7 @@ export const transactionExampleController: IController = async (controllerInput:
     await session.commitTransaction()
     session.startTransaction()
     // 3.3. update
-    await new UpdateExampleUseCase(updateRepository).handle(
+    await UpdateExampleUseCase.handle(
       {
         _id: responseCreate.insertedId,
         data: {
@@ -70,6 +73,7 @@ export const transactionExampleController: IController = async (controllerInput:
       },
       {
         cleanObject: objClean,
+        updateRepository,
         schemaValidation,
       },
       { session },
@@ -77,7 +81,7 @@ export const transactionExampleController: IController = async (controllerInput:
     await session.commitTransaction()
     session.startTransaction()
     // 3.4. update many
-    await new UpdateManyExampleUseCase(updateManyRepository).handle(
+    await UpdateManyExampleUseCase.handle(
       {
         filter: {
           name: controllerInput.httpRequest.body.updateMany.filter.name,
@@ -88,6 +92,7 @@ export const transactionExampleController: IController = async (controllerInput:
       },
       {
         cleanObject: objClean,
+        updateManyRepository,
         schemaValidation,
       },
       { session },
@@ -95,20 +100,22 @@ export const transactionExampleController: IController = async (controllerInput:
     await session.commitTransaction()
     session.startTransaction()
     // 3.5. delete
-    await new DeleteExampleUseCase(deleteRepository).handle(
+    await DeleteExampleUseCase.handle(
       { _id: controllerInput.httpRequest.body.delete === true ? responseCreate.insertedId : '' },
       {
         schemaValidation,
+        deleteRepository,
       },
       { session },
     )
     await session.commitTransaction()
     session.startTransaction()
     // 3.6. delete many
-    await new DeleteManyExampleUseCase(deleteManyRepository).handle(
+    await DeleteManyExampleUseCase.handle(
       { ids: controllerInput.httpRequest.body.deleteMany === true ? responseCreateMany.insertedIds : [''] },
       {
         schemaValidation,
+        deleteManyRepository,
       },
       { session },
     )

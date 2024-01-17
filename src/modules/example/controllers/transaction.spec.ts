@@ -5,7 +5,7 @@ import request from 'supertest'
 
 import { createApp } from '@/app'
 
-describe('create an example', async () => {
+describe('example use transaction', async () => {
   let app: Express
   beforeAll(async () => {
     app = await createApp({ dbConnection: DatabaseTestUtil.dbConnection })

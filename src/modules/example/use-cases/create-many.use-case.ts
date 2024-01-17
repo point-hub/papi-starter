@@ -1,4 +1,4 @@
-import type { ICreateManyOutput, ICreateManyRepository, ISchemaValidation, IUseCase } from '@point-hub/papi'
+import type { ICreateManyOutput, ICreateManyRepository, ISchemaValidation } from '@point-hub/papi'
 
 import { ExampleEntity } from '../entity'
 import { createManyValidation } from '../validations/create-many.validation'
@@ -12,15 +12,14 @@ export interface IInput {
 export interface IDeps {
   cleanObject(object: object): object
   schemaValidation: ISchemaValidation
+  createManyRepository: ICreateManyRepository
 }
 export interface IOptions {
   session?: unknown
 }
 
-export class CreateManyExampleUseCase implements IUseCase<IInput, IDeps, IOptions, ICreateManyOutput> {
-  constructor(public repository: ICreateManyRepository) {}
-
-  async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<ICreateManyOutput> {
+export class CreateManyExampleUseCase {
+  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<ICreateManyOutput> {
     const entities = []
     for (const document of input.examples) {
       const exampleEntity = new ExampleEntity({
@@ -31,6 +30,6 @@ export class CreateManyExampleUseCase implements IUseCase<IInput, IDeps, IOption
       entities.push(deps.cleanObject(exampleEntity.data))
     }
     await deps.schemaValidation({ examples: entities }, createManyValidation)
-    return await this.repository.handle(entities, options)
+    return await deps.createManyRepository.handle(entities, options)
   }
 }

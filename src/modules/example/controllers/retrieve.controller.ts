@@ -10,11 +10,11 @@ export const retrieveExampleController: IController = async (controllerInput: IC
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const repository = new RetrieveRepository(controllerInput.dbConnection)
+    const retrieveRepository = new RetrieveRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const response = await new RetrieveExampleUseCase(repository).handle(
+    const response = await RetrieveExampleUseCase.handle(
       { _id: controllerInput.httpRequest.params.id },
-      {},
+      { retrieveRepository },
     )
     await session.commitTransaction()
     // 4. return response to client

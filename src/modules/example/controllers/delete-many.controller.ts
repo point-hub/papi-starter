@@ -12,11 +12,11 @@ export const deleteManyExampleController: IController = async (controllerInput: 
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const repository = new DeleteManyRepository(controllerInput.dbConnection)
+    const deleteManyRepository = new DeleteManyRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const response = await new DeleteManyExampleUseCase(repository).handle(
+    const response = await DeleteManyExampleUseCase.handle(
       { ids: controllerInput.httpRequest.body.ids },
-      { schemaValidation },
+      { schemaValidation, deleteManyRepository },
       { session },
     )
     await session.commitTransaction()

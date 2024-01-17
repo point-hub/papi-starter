@@ -1,4 +1,4 @@
-import type { IDocument, ISchemaValidation, IUpdateManyOutput, IUpdateManyRepository, IUseCase } from '@point-hub/papi'
+import type { IDocument, ISchemaValidation, IUpdateManyOutput, IUpdateManyRepository } from '@point-hub/papi'
 
 import { ExampleEntity } from '../entity'
 import { updateManyValidation } from '../validations/update-many.validation'
@@ -13,15 +13,14 @@ export interface IInput {
 export interface IDeps {
   cleanObject(object: object): object
   schemaValidation: ISchemaValidation
+  updateManyRepository: IUpdateManyRepository
 }
 export interface IOptions {
   session?: unknown
 }
 
-export class UpdateManyExampleUseCase implements IUseCase<IInput, IDeps, IOptions, IUpdateManyOutput> {
-  constructor(public repository: IUpdateManyRepository) {}
-
-  async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IUpdateManyOutput> {
+export class UpdateManyExampleUseCase {
+  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IUpdateManyOutput> {
     // 1. define entity
     const exampleEntity = new ExampleEntity({
       name: input.data.name,
@@ -32,6 +31,6 @@ export class UpdateManyExampleUseCase implements IUseCase<IInput, IDeps, IOption
     // 2. validate schema
     await deps.schemaValidation(cleanEntity, updateManyValidation)
     // 3. database operation
-    return await this.repository.handle(input.filter, cleanEntity, options)
+    return await deps.updateManyRepository.handle(input.filter, cleanEntity, options)
   }
 }

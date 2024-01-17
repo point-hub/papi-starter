@@ -10,11 +10,11 @@ export const retrieveAllExampleController: IController = async (controllerInput:
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const repository = new RetrieveAllRepository(controllerInput.dbConnection)
+    const retrieveAllRepository = new RetrieveAllRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const response = await new RetrieveAllExampleUseCase(repository).handle(
+    const response = await RetrieveAllExampleUseCase.handle(
       { query: controllerInput.httpRequest.query },
-      {},
+      { retrieveAllRepository },
     )
     await session.commitTransaction()
     // 4. return response to client

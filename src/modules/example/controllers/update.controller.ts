@@ -13,14 +13,14 @@ export const updateExampleController: IController = async (controllerInput: ICon
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const repository = new UpdateRepository(controllerInput.dbConnection)
+    const updateRepository = new UpdateRepository(controllerInput.dbConnection)
     // 3. handle business rules
-    const response = await new UpdateExampleUseCase(repository).handle(
+    const response = await UpdateExampleUseCase.handle(
       {
         _id: controllerInput.httpRequest.params.id,
         data: controllerInput.httpRequest.body,
       },
-      { cleanObject: objClean, schemaValidation },
+      { cleanObject: objClean, schemaValidation, updateRepository },
     )
     await session.commitTransaction()
     // 4. return response to client
