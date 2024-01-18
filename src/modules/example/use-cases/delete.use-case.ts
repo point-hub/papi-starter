@@ -19,6 +19,6 @@ export class DeleteExampleUseCase {
     await deps.schemaValidation(input, deleteValidation)
     // 2. database operation
     const response = await deps.deleteRepository.handle(input._id, options)
-    return { deletedCount: response.deletedCount }
+    return { deleted_count: response.deleted_count }
   }
 }

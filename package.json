@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@point-hub/express-utils": "0.2.4",
-    "@point-hub/papi": "0.1.22",
+    "@point-hub/papi": "0.2.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

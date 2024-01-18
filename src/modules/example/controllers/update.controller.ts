@@ -27,8 +27,8 @@ export const updateExampleController: IController = async (controllerInput: ICon
     return {
       status: 200,
       json: {
-        matchedCount: response.matchedCount,
-        modifiedCount: response.modifiedCount,
+        matched_count: response.matched_count,
+        modified_count: response.modified_count,
       },
     }
   } catch (error) {

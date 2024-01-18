@@ -22,7 +22,7 @@ describe('retrieve an example', async () => {
 
     const examples = await DatabaseTestUtil.retrieveAll('examples')
 
-    const response = await request(app).get(`/v1/examples/${resultFactory.insertedIds[1]}`)
+    const response = await request(app).get(`/v1/examples/${resultFactory.inserted_ids[1]}`)
 
     // expect http response
     expect(response.statusCode).toEqual(200)

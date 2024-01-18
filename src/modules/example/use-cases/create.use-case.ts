@@ -29,6 +29,6 @@ export class CreateExampleUseCase {
     await deps.schemaValidation(cleanEntity, createValidation)
     // 3. database operation
     const response = await deps.createRepository.handle(cleanEntity, options)
-    return { insertedId: response.insertedId }
+    return { inserted_id: response.inserted_id }
   }
 }

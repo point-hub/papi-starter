@@ -66,7 +66,7 @@ export const transactionExampleController: IController = async (controllerInput:
     // 3.3. update
     await UpdateExampleUseCase.handle(
       {
-        _id: responseCreate.insertedId,
+        _id: responseCreate.inserted_id,
         data: {
           name: controllerInput.httpRequest.body.update.name,
         },
@@ -101,7 +101,7 @@ export const transactionExampleController: IController = async (controllerInput:
     session.startTransaction()
     // 3.5. delete
     await DeleteExampleUseCase.handle(
-      { _id: controllerInput.httpRequest.body.delete === true ? responseCreate.insertedId : '' },
+      { _id: controllerInput.httpRequest.body.delete === true ? responseCreate.inserted_id : '' },
       {
         schemaValidation,
         deleteRepository,
@@ -112,7 +112,7 @@ export const transactionExampleController: IController = async (controllerInput:
     session.startTransaction()
     // 3.6. delete many
     await DeleteManyExampleUseCase.handle(
-      { ids: controllerInput.httpRequest.body.deleteMany === true ? responseCreateMany.insertedIds : [''] },
+      { ids: controllerInput.httpRequest.body.deleteMany === true ? responseCreateMany.inserted_ids : [''] },
       {
         schemaValidation,
         deleteManyRepository,
@@ -124,7 +124,7 @@ export const transactionExampleController: IController = async (controllerInput:
     return {
       status: 201,
       json: {
-        insertedId: responseCreate.insertedId,
+        inserted_id: responseCreate.inserted_id,
       },
     }
   } catch (error) {

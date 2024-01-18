@@ -42,7 +42,7 @@ describe('create an example', async () => {
     })
 
     // expect recorded data
-    const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.insertedId)
+    const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.inserted_id)
     expect(exampleRecord).toBeNull()
   })
   it('validate schema', async () => {
@@ -66,7 +66,7 @@ describe('create an example', async () => {
     })
 
     // expect recorded data
-    const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.insertedId)
+    const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.inserted_id)
     expect(exampleRecord).toBeNull()
   })
   it('create success', async () => {
@@ -81,12 +81,12 @@ describe('create an example', async () => {
     expect(response.statusCode).toEqual(201)
 
     // expect response json
-    expect(response.body.insertedId).toBeDefined()
+    expect(response.body.inserted_id).toBeDefined()
 
     // expect recorded data
-    const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.insertedId)
+    const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.inserted_id)
 
-    expect(exampleRecord._id).toStrictEqual(response.body.insertedId)
+    expect(exampleRecord._id).toStrictEqual(response.body.inserted_id)
     expect(exampleRecord.name).toStrictEqual(data.name)
     expect(isValid(new Date(exampleRecord.created_date as string))).toBeTruthy()
   })

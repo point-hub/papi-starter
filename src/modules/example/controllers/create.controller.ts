@@ -29,7 +29,7 @@ export const createExampleController: IController = async (controllerInput: ICon
     return {
       status: 201,
       json: {
-        insertedId: response.insertedId,
+        inserted_id: response.inserted_id,
       },
     }
   } catch (error) {

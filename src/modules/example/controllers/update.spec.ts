@@ -26,7 +26,7 @@ describe('update an example', async () => {
       name: true,
     }
 
-    const response = await request(app).patch(`/v1/examples/${resultFactory.insertedId}`).send(updateData)
+    const response = await request(app).patch(`/v1/examples/${resultFactory.inserted_id}`).send(updateData)
 
     // expect http response
     expect(response.statusCode).toEqual(422)
@@ -42,7 +42,7 @@ describe('update an example', async () => {
     })
 
     // expect data unmodified
-    const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.insertedId)
+    const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_id)
     expect(unmodifiedExampleRecord.name).toStrictEqual(examples.data[0].name)
     expect(unmodifiedExampleRecord.updated_date).toBeUndefined()
   })
@@ -55,24 +55,24 @@ describe('update an example', async () => {
       name: faker.person.fullName(),
     }
 
-    const response = await request(app).patch(`/v1/examples/${resultFactory.insertedIds[1]}`).send(updateData)
+    const response = await request(app).patch(`/v1/examples/${resultFactory.inserted_ids[1]}`).send(updateData)
 
     // expect http response
     expect(response.statusCode).toEqual(200)
 
     // expect response json
     expect(response.body).toStrictEqual({
-      matchedCount: 1,
-      modifiedCount: 1,
+      matched_count: 1,
+      modified_count: 1,
     })
 
     // expect recorded data
-    const exampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.insertedIds[1])
+    const exampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[1])
     expect(exampleRecord.name).toStrictEqual(updateData.name)
     expect(isValid(new Date(exampleRecord.updated_date as string))).toBeTruthy()
 
     // expect another data unmodified
-    const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.insertedIds[0])
+    const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[0])
     expect(unmodifiedExampleRecord.name).toStrictEqual(examples.data[0].name)
     expect(unmodifiedExampleRecord.updated_date).toBeUndefined()
   })

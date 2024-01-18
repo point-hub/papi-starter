@@ -36,9 +36,9 @@ describe('retrieve all examples', async () => {
     expect(response.body.data[2].name).toStrictEqual(examples.data[2].name)
 
     expect(response.body.pagination.page).toStrictEqual(1)
-    expect(response.body.pagination.pageSize).toStrictEqual(10)
-    expect(response.body.pagination.pageCount).toStrictEqual(1)
-    expect(response.body.pagination.totalDocument).toStrictEqual(3)
+    expect(response.body.pagination.page_size).toStrictEqual(10)
+    expect(response.body.pagination.page_count).toStrictEqual(1)
+    expect(response.body.pagination.total_document).toStrictEqual(3)
   })
   it('sort data in ascending order', async () => {
     const exampleFactory = new ExampleFactory(DatabaseTestUtil.dbConnection)
@@ -70,9 +70,9 @@ describe('retrieve all examples', async () => {
     expect(response.body.data[2].name).toStrictEqual(data[0].name) // John Doe
 
     expect(response.body.pagination.page).toStrictEqual(1)
-    expect(response.body.pagination.pageSize).toStrictEqual(10)
-    expect(response.body.pagination.pageCount).toStrictEqual(1)
-    expect(response.body.pagination.totalDocument).toStrictEqual(3)
+    expect(response.body.pagination.page_size).toStrictEqual(10)
+    expect(response.body.pagination.page_count).toStrictEqual(1)
+    expect(response.body.pagination.total_document).toStrictEqual(3)
   })
   it('sort data in descending order', async () => {
     const exampleFactory = new ExampleFactory(DatabaseTestUtil.dbConnection)
@@ -104,9 +104,9 @@ describe('retrieve all examples', async () => {
     expect(response.body.data[2].name).toStrictEqual(data[1].name) // Charles
 
     expect(response.body.pagination.page).toStrictEqual(1)
-    expect(response.body.pagination.pageSize).toStrictEqual(10)
-    expect(response.body.pagination.pageCount).toStrictEqual(1)
-    expect(response.body.pagination.totalDocument).toStrictEqual(3)
+    expect(response.body.pagination.page_size).toStrictEqual(10)
+    expect(response.body.pagination.page_count).toStrictEqual(1)
+    expect(response.body.pagination.total_document).toStrictEqual(3)
   })
   it('navigate pagination', async () => {
     const exampleFactory = new ExampleFactory(DatabaseTestUtil.dbConnection)
@@ -116,7 +116,7 @@ describe('retrieve all examples', async () => {
 
     const response = await request(app).get(`/v1/examples`).query({
       page: 2,
-      pageSize: 2,
+      page_size: 2,
     })
 
     // expect http response
@@ -127,9 +127,9 @@ describe('retrieve all examples', async () => {
     expect(response.body.data[0].name).toStrictEqual(examples.data[2].name)
 
     expect(response.body.pagination.page).toStrictEqual(2)
-    expect(response.body.pagination.pageSize).toStrictEqual(2)
-    expect(response.body.pagination.pageCount).toStrictEqual(2)
-    expect(response.body.pagination.totalDocument).toStrictEqual(3)
+    expect(response.body.pagination.page_size).toStrictEqual(2)
+    expect(response.body.pagination.page_count).toStrictEqual(2)
+    expect(response.body.pagination.total_document).toStrictEqual(3)
   })
   it('choose fields', async () => {
     const exampleFactory = new ExampleFactory(DatabaseTestUtil.dbConnection)
@@ -160,8 +160,8 @@ describe('retrieve all examples', async () => {
     expect(response.body.data[2].created_date).toBeUndefined()
 
     expect(response.body.pagination.page).toStrictEqual(1)
-    expect(response.body.pagination.pageSize).toStrictEqual(10)
-    expect(response.body.pagination.pageCount).toStrictEqual(1)
-    expect(response.body.pagination.totalDocument).toStrictEqual(3)
+    expect(response.body.pagination.page_size).toStrictEqual(10)
+    expect(response.body.pagination.page_count).toStrictEqual(1)
+    expect(response.body.pagination.total_document).toStrictEqual(3)
   })
 })

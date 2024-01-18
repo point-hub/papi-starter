@@ -23,7 +23,7 @@ export const deleteManyExampleController: IController = async (controllerInput: 
     // 4. return response to client
     return {
       status: 200,
-      json: { deletedCount: response.deletedCount },
+      json: { deleted_count: response.deleted_count },
     }
   } catch (error) {
     await session?.abortTransaction()

@@ -33,8 +33,8 @@ export class UpdateManyExampleUseCase {
     // 3. database operation
     const response = await deps.updateManyRepository.handle(input.filter, cleanEntity, options)
     return {
-      matchedCount: response.matchedCount,
-      modifiedCount: response.modifiedCount,
+      matched_count: response.matched_count,
+      modified_count: response.modified_count,
     }
   }
 }
