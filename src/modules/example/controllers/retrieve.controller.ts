@@ -20,7 +20,13 @@ export const retrieveExampleController: IController = async (controllerInput: IC
     // 4. return response to client
     return {
       status: 200,
-      json: response,
+      json: {
+        _id: response._id,
+        name: response.name,
+        phone: response.phone,
+        created_date: response.created_date,
+        updated_date: response.updated_date,
+      },
     }
   } catch (error) {
     await session?.abortTransaction()

@@ -30,6 +30,10 @@ export class CreateManyExampleUseCase {
       entities.push(deps.cleanObject(exampleEntity.data))
     }
     await deps.schemaValidation({ examples: entities }, createManyValidation)
-    return await deps.createManyRepository.handle(entities, options)
+    const response = await deps.createManyRepository.handle(entities, options)
+    return {
+      insertedIds: response.insertedIds,
+      insertedCount: response.insertedCount,
+    }
   }
 }

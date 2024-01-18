@@ -10,6 +10,10 @@ export interface IOptions {}
 
 export class RetrieveAllExampleUseCase {
   static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IRetrieveAllOutput> {
-    return await deps.retrieveAllRepository.handle(input.query, options)
+    const response = await deps.retrieveAllRepository.handle(input.query, options)
+    return {
+      data: response.data,
+      pagination: response.pagination,
+    }
   }
 }

@@ -31,6 +31,10 @@ export class UpdateManyExampleUseCase {
     // 2. validate schema
     await deps.schemaValidation(cleanEntity, updateManyValidation)
     // 3. database operation
-    return await deps.updateManyRepository.handle(input.filter, cleanEntity, options)
+    const response = await deps.updateManyRepository.handle(input.filter, cleanEntity, options)
+    return {
+      matchedCount: response.matchedCount,
+      modifiedCount: response.modifiedCount,
+    }
   }
 }

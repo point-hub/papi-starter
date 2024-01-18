@@ -18,6 +18,7 @@ export class DeleteManyExampleUseCase {
     // 1. validate schema
     await deps.schemaValidation(input, deleteManyValidation)
     // 2. database operation
-    return await deps.deleteManyRepository.handle(input.ids, options)
+    const response = await deps.deleteManyRepository.handle(input.ids, options)
+    return { deletedCount: response.deletedCount }
   }
 }
