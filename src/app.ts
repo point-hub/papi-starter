@@ -8,6 +8,9 @@ import express from 'express'
 import helmet from 'helmet'
 import { RedisClientType } from 'redis'
 
+import cookieConfig from '@/config/cookie'
+import corsConfig from '@/config/cors'
+
 import router from './router'
 
 export interface IBaseAppInput extends IBaseRouterInput {
@@ -38,9 +41,14 @@ export const createApp = async (appInput: IBaseAppInput) => {
   // Set security HTTP headers
   app.use(helmet())
   // Parse cookie
-  app.use(cookieParser('secret'))
+  app.use(cookieParser(cookieConfig.secret))
   // Cors
-  app.use(cors())
+  app.use(
+    cors({
+      origin: corsConfig.origin,
+      credentials: corsConfig.credentials,
+    }),
+  )
 
   /**
    * Static Assets

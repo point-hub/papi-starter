@@ -12,6 +12,8 @@ export const makeController = async (makeControllerInput: IMakeControllerInput) 
       ip: req.ip,
       method: req.method,
       path: req.path,
+      cookies: req.cookies,
+      signedCookies: req.signedCookies,
       headers: {
         Accept: req.get('Accept'),
         Authorization: req.get('Authorization'),
@@ -26,6 +28,11 @@ export const makeController = async (makeControllerInput: IMakeControllerInput) 
         dbConnection: makeControllerInput.dbConnection,
       })
       res.status(response.status)
+      if (response.cookies) {
+        for (const cookie of response.cookies) {
+          res.cookie(cookie.name, cookie.val, cookie.options)
+        }
+      }
       if (response.json) {
         res.json(response.json)
       }
