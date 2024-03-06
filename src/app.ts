@@ -1,22 +1,17 @@
 import type { IBaseRouterInput } from '@point-hub/papi'
 import { BaseErrorHandler } from '@point-hub/papi'
-import { Server } from 'bun'
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
 import helmet from 'helmet'
-import { RedisClientType } from 'redis'
 
 import cookieConfig from '@/config/cookie'
 import corsConfig from '@/config/cors'
 
 import router from './router'
 
-export interface IBaseAppInput extends IBaseRouterInput {
-  webSocketServer?: Server
-  publisher?: RedisClientType
-}
+export interface IBaseAppInput extends IBaseRouterInput {}
 
 export const createApp = async (appInput: IBaseAppInput) => {
   const app = express()
