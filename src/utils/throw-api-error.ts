@@ -1,5 +1,10 @@
 import { BaseErrorHandler, type TypeCodeStatus } from '@point-hub/papi'
 
-export const throwApiError = (codeStatus: TypeCodeStatus, errors?: object) => {
-  throw new BaseErrorHandler.ApiError(codeStatus, errors)
+export interface IOptions {
+  message?: string
+  errors?: object
+}
+
+export const throwApiError = (codeStatus: TypeCodeStatus, options?: IOptions) => {
+  throw new BaseErrorHandler.ApiError(codeStatus, options)
 }
