@@ -64,6 +64,22 @@ Choose one of the options that you prefer
 
 ### Installation
 
+We are using [Bun](https://dev.pointhub.net/guide/introduction/bun) as a drop-in replacement for Node.js
+
+### Install Bun
+
+Linux / MacOS
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+Windows
+```bash
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+### Install dependencies
+
 ```bash
 cp .env.example .env
 cp .env.test.example .env.test
