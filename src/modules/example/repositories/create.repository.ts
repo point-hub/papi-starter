@@ -2,12 +2,16 @@ import type { ICreateOutput, ICreateRepository, IDatabase, IDocument } from '@po
 
 import { collectionName } from '../entity'
 
-export class CreateRepository implements ICreateRepository {
-  public collection = collectionName
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ICreateExampleOutput extends ICreateOutput {}
+export interface ICreateExampleRepository extends ICreateRepository {
+  handle(document: IDocument, options?: unknown): Promise<ICreateExampleOutput>
+}
 
+export class CreateRepository implements ICreateExampleRepository {
   constructor(public database: IDatabase) {}
 
-  async handle(document: IDocument, options?: unknown): Promise<ICreateOutput> {
-    return await this.database.collection(this.collection).create(document, options)
+  async handle(document: IDocument, options?: unknown): Promise<ICreateExampleOutput> {
+    return await this.database.collection(collectionName).create(document, options)
   }
 }

@@ -11,6 +11,7 @@ import corsConfig from '@/config/cors'
 
 import router from './router'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IBaseAppInput extends IBaseRouterInput {}
 
 export const createApp = async (appInput: IBaseAppInput) => {

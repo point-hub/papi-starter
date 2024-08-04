@@ -1,6 +1,7 @@
-import type { ICreateOutput, ICreateRepository, ISchemaValidation } from '@point-hub/papi'
+import type { ISchemaValidation } from '@point-hub/papi'
 
 import { ExampleEntity } from '../entity'
+import type { ICreateExampleRepository } from '../repositories/create.repository'
 import { createValidation } from '../validations/create.validation'
 
 export interface IInput {
@@ -9,15 +10,18 @@ export interface IInput {
 }
 export interface IDeps {
   cleanObject(object: object): object
-  createRepository: ICreateRepository
+  createRepository: ICreateExampleRepository
   schemaValidation: ISchemaValidation
 }
 export interface IOptions {
   session?: unknown
 }
+export interface IOutput {
+  inserted_id: string
+}
 
 export class CreateExampleUseCase {
-  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<ICreateOutput> {
+  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IOutput> {
     // 1. define entity
     const exampleEntity = new ExampleEntity({
       name: input.name,

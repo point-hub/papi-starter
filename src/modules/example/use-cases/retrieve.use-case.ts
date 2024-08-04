@@ -1,15 +1,24 @@
-import type { IRetrieveOutput, IRetrieveRepository } from '@point-hub/papi'
+import type { IRetrieveExampleRepository } from '../repositories/retrieve.repository'
 
 export interface IInput {
   _id: string
 }
 export interface IDeps {
-  retrieveRepository: IRetrieveRepository
+  retrieveRepository: IRetrieveExampleRepository
 }
-export interface IOptions {}
+export interface IOptions {
+  session?: unknown
+}
+export interface IOutput {
+  _id: string
+  name: string
+  phone: string
+  created_date: string
+  updated_date: string
+}
 
 export class RetrieveExampleUseCase {
-  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IRetrieveOutput> {
+  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IOutput> {
     const response = await deps.retrieveRepository.handle(input._id, options)
     return {
       _id: response._id,

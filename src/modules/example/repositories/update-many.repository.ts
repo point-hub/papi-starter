@@ -2,12 +2,16 @@ import type { IDatabase, IDocument, IUpdateManyOutput, IUpdateManyRepository } f
 
 import { collectionName } from '../entity'
 
-export class UpdateManyRepository implements IUpdateManyRepository {
-  public collection = collectionName
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface IUpdateManyExampleOutput extends IUpdateManyOutput {}
+export interface IUpdateManyExampleRepository extends IUpdateManyRepository {
+  handle(filter: IDocument, document: IDocument, options?: unknown): Promise<IUpdateManyExampleOutput>
+}
 
+export class UpdateManyRepository implements IUpdateManyExampleRepository {
   constructor(public database: IDatabase) {}
 
-  async handle(filter: IDocument, document: IDocument, options?: unknown): Promise<IUpdateManyOutput> {
-    return await this.database.collection(this.collection).updateMany(filter, document, options)
+  async handle(filter: IDocument, document: IDocument, options?: unknown): Promise<IUpdateManyExampleOutput> {
+    return await this.database.collection(collectionName).updateMany(filter, document, options)
   }
 }

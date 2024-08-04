@@ -1,6 +1,7 @@
-import type { ICreateManyOutput, ICreateManyRepository, ISchemaValidation } from '@point-hub/papi'
+import type { ISchemaValidation } from '@point-hub/papi'
 
 import { ExampleEntity } from '../entity'
+import type { ICreateManyExampleRepository } from '../repositories/create-many.repository'
 import { createManyValidation } from '../validations/create-many.validation'
 
 export interface IInput {
@@ -12,14 +13,18 @@ export interface IInput {
 export interface IDeps {
   cleanObject(object: object): object
   schemaValidation: ISchemaValidation
-  createManyRepository: ICreateManyRepository
+  createManyRepository: ICreateManyExampleRepository
 }
 export interface IOptions {
   session?: unknown
 }
+export interface IOutput {
+  inserted_count: number
+  inserted_ids: string[]
+}
 
 export class CreateManyExampleUseCase {
-  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<ICreateManyOutput> {
+  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IOutput> {
     const entities = []
     for (const document of input.examples) {
       const exampleEntity = new ExampleEntity({
