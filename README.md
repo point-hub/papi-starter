@@ -113,11 +113,11 @@ Testing specific file or folder
 
 ```bash
 # Test specific file
-bun test -- src/modules/example/controller/create.spec
+bun test -- src/modules/examples/controller/create.spec
 
 # Test specific folder
-bun test -- src/modules/example/controller
+bun test -- src/modules/examples/controller
 
 # Test example module
-bun test -- src/modules/example
+bun test -- src/modules/examples
 ```

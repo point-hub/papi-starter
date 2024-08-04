@@ -16,7 +16,7 @@ export default class DbSeedCommand extends BaseConsoleCommand {
   async handle(): Promise<void> {
     try {
       await this.dbConnection.open()
-      await this.seed('example', 'examples')
+      await this.seed('examples', 'examples')
     } catch (error) {
       console.error(error)
     } finally {

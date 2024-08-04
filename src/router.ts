@@ -1,7 +1,7 @@
 import express, { Express } from 'express'
 
 import { IBaseAppInput } from './app'
-import exampleRouter from './modules/example/router'
+import exampleRouter from './modules/examples/router'
 
 export default async function (baseRouterInput: IBaseAppInput) {
   const app: Express = express()
