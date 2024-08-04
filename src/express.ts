@@ -1,9 +1,7 @@
 import { IHttpRequest, IMakeControllerInput } from '@point-hub/papi'
 import { NextFunction, Request, Response } from 'express'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const makeController = async (makeControllerInput: IMakeControllerInput) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return async (req: Request, res: Response, next: NextFunction) => {
     const httpRequest: IHttpRequest = {
       body: req.body,
