@@ -62,8 +62,6 @@ export const createApp = async (appInput: IBaseAppInput) => {
 
   app.use(BaseErrorHandler.invalidPathMiddleware)
 
-  app.use(BaseErrorHandler.mongodbErrorHandlerMiddleware())
-
   app.use(BaseErrorHandler.errorHandlerMiddleware)
 
   return app
