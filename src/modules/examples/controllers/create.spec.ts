@@ -23,10 +23,11 @@ describe('create an example', async () => {
       name: 'John Doe',
     })
     await exampleFactory.create()
+
+    // create new example with same name as above
     const data = {
       name: 'John Doe',
     }
-
     const response = await request(app).post('/v1/examples').send(data)
 
     // expect http response

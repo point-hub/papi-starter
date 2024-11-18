@@ -48,29 +48,23 @@ describe('update an example', async () => {
   })
   it('update success', async () => {
     const resultFactory = await new ExampleFactory(DatabaseTestUtil.dbConnection).createMany(3)
-
     const examples = await DatabaseTestUtil.retrieveAll('examples')
-
     const updateData = {
       name: faker.person.fullName(),
     }
-
     const response = await request(app).patch(`/v1/examples/${resultFactory.inserted_ids[1]}`).send(updateData)
-
+    console.log(response.status)
     // expect http response
     expect(response.statusCode).toEqual(200)
-
     // expect response json
     expect(response.body).toStrictEqual({
       matched_count: 1,
       modified_count: 1,
     })
-
     // expect recorded data
     const exampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[1])
     expect(exampleRecord.name).toStrictEqual(updateData.name)
     expect(isValid(new Date(exampleRecord.updated_date as string))).toBeTruthy()
-
     // expect another data unmodified
     const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[0])
     expect(unmodifiedExampleRecord.name).toStrictEqual(examples.data[0].name)

@@ -23,6 +23,10 @@ export const schema: ISchema[] = [
           bsonType: 'string',
           description: 'The name for the example',
         },
+        phone: {
+          bsonType: 'string',
+          description: 'The phone for the example',
+        },
       },
     },
   },

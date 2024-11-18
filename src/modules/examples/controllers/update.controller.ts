@@ -1,6 +1,7 @@
 import { objClean } from '@point-hub/express-utils'
 import type { IController, IControllerInput } from '@point-hub/papi'
 
+import { UniqueValidation } from '@/utils/unique-validation'
 import { schemaValidation } from '@/utils/validation'
 
 import { UpdateRepository } from '../repositories/update.repository'
@@ -13,14 +14,15 @@ export const updateExampleController: IController = async (controllerInput: ICon
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const updateRepository = new UpdateRepository(controllerInput.dbConnection)
+    const updateRepository = new UpdateRepository(controllerInput.dbConnection, { session })
+    const uniqueValidation = new UniqueValidation(controllerInput.dbConnection)
     // 3. handle business rules
     const response = await UpdateExampleUseCase.handle(
       {
         _id: controllerInput.httpRequest.params.id,
         data: controllerInput.httpRequest.body,
       },
-      { cleanObject: objClean, schemaValidation, updateRepository },
+      { schemaValidation, updateRepository, uniqueValidation, objClean },
     )
     await session.commitTransaction()
     // 4. return response to client

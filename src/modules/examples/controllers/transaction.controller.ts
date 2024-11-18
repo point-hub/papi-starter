@@ -1,6 +1,7 @@
 import { objClean } from '@point-hub/express-utils'
 import type { IController, IControllerInput } from '@point-hub/papi'
 
+import { UniqueValidation } from '@/utils/unique-validation'
 import { schemaValidation } from '@/utils/validation'
 
 import { CreateRepository } from '../repositories/create.repository'
@@ -23,44 +24,36 @@ export const transactionExampleController: IController = async (controllerInput:
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const createRepository = new CreateRepository(controllerInput.dbConnection)
-    const createManyRepository = new CreateManyRepository(controllerInput.dbConnection)
-    const updateRepository = new UpdateRepository(controllerInput.dbConnection)
-    const updateManyRepository = new UpdateManyRepository(controllerInput.dbConnection)
-    const deleteRepository = new DeleteRepository(controllerInput.dbConnection)
-    const deleteManyRepository = new DeleteManyRepository(controllerInput.dbConnection)
+    const createRepository = new CreateRepository(controllerInput.dbConnection, { session })
+    const createManyRepository = new CreateManyRepository(controllerInput.dbConnection, { session })
+    const updateRepository = new UpdateRepository(controllerInput.dbConnection, { session })
+    const updateManyRepository = new UpdateManyRepository(controllerInput.dbConnection, { session })
+    const deleteRepository = new DeleteRepository(controllerInput.dbConnection, { session })
+    const deleteManyRepository = new DeleteManyRepository(controllerInput.dbConnection, { session })
+    const uniqueValidation = new UniqueValidation(controllerInput.dbConnection)
     // 3. handle business rules
-    const responseCreate = await CreateExampleUseCase.handle(
-      controllerInput.httpRequest.body.new,
-      {
-        cleanObject: objClean,
-        createRepository,
-        schemaValidation,
-      },
-      { session },
-    )
+    const responseCreate = await CreateExampleUseCase.handle(controllerInput.httpRequest.body.new, {
+      createRepository,
+      schemaValidation,
+      uniqueValidation,
+      objClean,
+    })
     // 3.1. create
-    await CreateExampleUseCase.handle(
-      controllerInput.httpRequest.body.create,
-      {
-        cleanObject: objClean,
-        createRepository,
-        schemaValidation,
-      },
-      { session },
-    )
+    await CreateExampleUseCase.handle(controllerInput.httpRequest.body.create, {
+      createRepository,
+      schemaValidation,
+      uniqueValidation,
+      objClean,
+    })
     await session.commitTransaction()
     session.startTransaction()
     // 3.2. create many
-    const responseCreateMany = await CreateManyExampleUseCase.handle(
-      controllerInput.httpRequest.body.createMany,
-      {
-        cleanObject: objClean,
-        createManyRepository,
-        schemaValidation,
-      },
-      { session },
-    )
+    const responseCreateMany = await CreateManyExampleUseCase.handle(controllerInput.httpRequest.body.createMany, {
+      createManyRepository,
+      schemaValidation,
+      uniqueValidation,
+      objClean,
+    })
     await session.commitTransaction()
     session.startTransaction()
     // 3.3. update
@@ -72,11 +65,11 @@ export const transactionExampleController: IController = async (controllerInput:
         },
       },
       {
-        cleanObject: objClean,
+        uniqueValidation,
         updateRepository,
         schemaValidation,
+        objClean,
       },
-      { session },
     )
     await session.commitTransaction()
     session.startTransaction()
@@ -91,11 +84,10 @@ export const transactionExampleController: IController = async (controllerInput:
         },
       },
       {
-        cleanObject: objClean,
         updateManyRepository,
         schemaValidation,
+        objClean,
       },
-      { session },
     )
     await session.commitTransaction()
     session.startTransaction()
@@ -106,7 +98,6 @@ export const transactionExampleController: IController = async (controllerInput:
         schemaValidation,
         deleteRepository,
       },
-      { session },
     )
     await session.commitTransaction()
     session.startTransaction()
@@ -117,7 +108,6 @@ export const transactionExampleController: IController = async (controllerInput:
         schemaValidation,
         deleteManyRepository,
       },
-      { session },
     )
     await session.commitTransaction()
     // 4. return response to client

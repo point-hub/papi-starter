@@ -6,12 +6,11 @@ import type { IRetrieveAllExampleRepository } from '../repositories/retrieve-all
 export interface IInput {
   query: IQuery
 }
+
 export interface IDeps {
   retrieveAllRepository: IRetrieveAllExampleRepository
 }
-export interface IOptions {
-  session?: unknown
-}
+
 export interface IOutput {
   data: IRetrieveExampleOutput[]
   pagination: {
@@ -23,8 +22,10 @@ export interface IOutput {
 }
 
 export class RetrieveAllExampleUseCase {
-  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IOutput> {
-    const response = await deps.retrieveAllRepository.handle(input.query, options)
+  static async handle(input: IInput, deps: IDeps): Promise<IOutput> {
+    // 1. database operation
+    const response = await deps.retrieveAllRepository.handle(input.query)
+    // 2. output
     return {
       data: response.data,
       pagination: response.pagination,

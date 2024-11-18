@@ -3,12 +3,11 @@ import type { IRetrieveExampleRepository } from '../repositories/retrieve.reposi
 export interface IInput {
   _id: string
 }
+
 export interface IDeps {
   retrieveRepository: IRetrieveExampleRepository
 }
-export interface IOptions {
-  session?: unknown
-}
+
 export interface IOutput {
   _id: string
   name: string
@@ -18,8 +17,10 @@ export interface IOutput {
 }
 
 export class RetrieveExampleUseCase {
-  static async handle(input: IInput, deps: IDeps, options?: IOptions): Promise<IOutput> {
-    const response = await deps.retrieveRepository.handle(input._id, options)
+  static async handle(input: IInput, deps: IDeps): Promise<IOutput> {
+    // 1. database operation
+    const response = await deps.retrieveRepository.handle(input._id)
+    // 2. output
     return {
       _id: response._id,
       name: response.name,

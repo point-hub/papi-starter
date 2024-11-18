@@ -1,22 +1,27 @@
-import type { IDatabase, IRetrieveOutput, IRetrieveRepository } from '@point-hub/papi'
+import type { IDatabase } from '@point-hub/papi'
 
 import { collectionName } from '../entity'
 
-export interface IRetrieveExampleOutput extends IRetrieveOutput {
+export interface IRetrieveExampleRepository {
+  handle(_id: string): Promise<IRetrieveExampleOutput>
+}
+
+export interface IRetrieveExampleOutput {
+  _id: string
   name: string
   phone: string
   created_date: string
   updated_date: string
 }
-export interface IRetrieveExampleRepository extends IRetrieveRepository {
-  handle(_id: string, options?: unknown): Promise<IRetrieveExampleOutput>
-}
 
 export class RetrieveRepository implements IRetrieveExampleRepository {
-  constructor(public database: IDatabase) {}
+  constructor(
+    public database: IDatabase,
+    public options?: Record<string, unknown>,
+  ) {}
 
-  async handle(_id: string, options?: unknown): Promise<IRetrieveExampleOutput> {
-    const response = await this.database.collection(collectionName).retrieve(_id, options)
+  async handle(_id: string): Promise<IRetrieveExampleOutput> {
+    const response = await this.database.collection(collectionName).retrieve(_id, this.options)
     return {
       _id: response._id,
       name: response.name as string,

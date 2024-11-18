@@ -1,17 +1,22 @@
-import type { ICreateOutput, ICreateRepository, IDatabase, IDocument } from '@point-hub/papi'
+import type { IDatabase, IDocument } from '@point-hub/papi'
 
 import { collectionName } from '../entity'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ICreateExampleOutput extends ICreateOutput {}
-export interface ICreateExampleRepository extends ICreateRepository {
-  handle(document: IDocument, options?: unknown): Promise<ICreateExampleOutput>
+export interface ICreateExampleRepository {
+  handle(document: IDocument): Promise<ICreateExampleOutput>
+}
+
+export interface ICreateExampleOutput {
+  inserted_id: string
 }
 
 export class CreateRepository implements ICreateExampleRepository {
-  constructor(public database: IDatabase) {}
+  constructor(
+    public database: IDatabase,
+    public options?: Record<string, unknown>,
+  ) {}
 
-  async handle(document: IDocument, options?: unknown): Promise<ICreateExampleOutput> {
-    return await this.database.collection(collectionName).create(document, options)
+  async handle(document: IDocument): Promise<ICreateExampleOutput> {
+    return await this.database.collection(collectionName).create(document, { ignoreUndefined: true, ...this.options })
   }
 }

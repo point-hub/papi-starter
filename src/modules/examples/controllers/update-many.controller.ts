@@ -13,18 +13,14 @@ export const updateManyExampleController: IController = async (controllerInput: 
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const updateManyRepository = new UpdateManyRepository(controllerInput.dbConnection)
+    const updateManyRepository = new UpdateManyRepository(controllerInput.dbConnection, { session })
     // 3. handle business rules
     const response = await UpdateManyExampleUseCase.handle(
       {
         filter: controllerInput.httpRequest.body.filter,
         data: controllerInput.httpRequest.body.data,
       },
-      {
-        cleanObject: objClean,
-        updateManyRepository,
-        schemaValidation,
-      },
+      { updateManyRepository, schemaValidation, objClean },
     )
     await session.commitTransaction()
     // 4. return response to client

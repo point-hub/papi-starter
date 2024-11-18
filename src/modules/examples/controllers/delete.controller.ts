@@ -12,12 +12,11 @@ export const deleteExampleController: IController = async (controllerInput: ICon
     session = controllerInput.dbConnection.startSession()
     session.startTransaction()
     // 2. define repository
-    const deleteRepository = new DeleteRepository(controllerInput.dbConnection)
+    const deleteRepository = new DeleteRepository(controllerInput.dbConnection, { session })
     // 3. handle business logic
     const response = await DeleteExampleUseCase.handle(
       { _id: controllerInput.httpRequest.params.id },
       { schemaValidation, deleteRepository },
-      { session },
     )
     await session.commitTransaction()
     // return response to client
