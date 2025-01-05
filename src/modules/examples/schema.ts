@@ -1,7 +1,7 @@
 /**
  * MongoDB Schema
  *
- * https://www.mongodb.com/docs/v6.0/core/schema-validation/update-schema-validation/
+ * https://www.mongodb.com/docs/current/core/schema-validation/update-schema-validation/
  * https://www.mongodb.com/docs/drivers/node/current/fundamentals/indexes/
  * https://www.mongodb.com/developer/products/mongodb/mongodb-schema-design-best-practices/
  */
