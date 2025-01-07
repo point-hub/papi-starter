@@ -13,7 +13,7 @@ export interface IInput {
 }
 
 export interface IDeps {
-  createRepository: ICreateExampleRepository
+  createExampleRepository: ICreateExampleRepository
   schemaValidation: ISchemaValidation
   uniqueValidation: IUniqueValidation
   objClean: IObjClean
@@ -37,7 +37,7 @@ export class CreateExampleUseCase {
     exampleEntity.generateDate('created_date')
     exampleEntity.data = deps.objClean(exampleEntity.data)
     // 4. database operation
-    const response = await deps.createRepository.handle(exampleEntity.data)
+    const response = await deps.createExampleRepository.handle(exampleEntity.data)
     // 5. output
     return { inserted_id: response.inserted_id }
   }

@@ -9,7 +9,7 @@ export interface IInput {
 
 export interface IDeps {
   schemaValidation: ISchemaValidation
-  deleteRepository: IDeleteExampleRepository
+  deleteExampleRepository: IDeleteExampleRepository
 }
 
 export interface IOutput {
@@ -21,7 +21,7 @@ export class DeleteExampleUseCase {
     // 1. validate schema
     await deps.schemaValidation(input, deleteValidation)
     // 2. database operation
-    const response = await deps.deleteRepository.handle(input._id)
+    const response = await deps.deleteExampleRepository.handle(input._id)
     // 3. output
     return { deleted_count: response.deleted_count }
   }

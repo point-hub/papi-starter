@@ -4,26 +4,33 @@
     "package.json"
   ],
   "compilerOptions": {
-    "lib": ["ESNext"],
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
+    // Base options
     "paths": {
       "@/*": ["./src/*"]
     },
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
     "composite": true,
-    "strict": true,
     "downlevelIteration": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    // Enable latest features
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
     "allowJs": true,
-    "types": [
-      "bun-types" // add Bun global
-    ],
+    // Bundler options
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    // Strict options
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": true,
   }
 }

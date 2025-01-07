@@ -1,4 +1,4 @@
-import { IDatabase, IDocument } from '@point-hub/papi'
+import type { IDatabase, IDocument } from '@point-hub/papi'
 
 import { throwApiError } from './throw-api-error'
 

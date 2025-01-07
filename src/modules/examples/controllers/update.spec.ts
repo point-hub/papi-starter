@@ -43,8 +43,8 @@ describe('update an example', async () => {
 
     // expect data unmodified
     const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_id)
-    expect(unmodifiedExampleRecord.name).toStrictEqual(examples.data[0].name)
-    expect(unmodifiedExampleRecord.updated_date).toBeUndefined()
+    expect(unmodifiedExampleRecord['name']).toStrictEqual(examples.data[0]['name'])
+    expect(unmodifiedExampleRecord['updated_date']).toBeUndefined()
   })
   it('update success', async () => {
     const resultFactory = await new ExampleFactory(DatabaseTestUtil.dbConnection).createMany(3)
@@ -63,11 +63,11 @@ describe('update an example', async () => {
     })
     // expect recorded data
     const exampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[1])
-    expect(exampleRecord.name).toStrictEqual(updateData.name)
-    expect(isValid(new Date(exampleRecord.updated_date as string))).toBeTruthy()
+    expect(exampleRecord['name']).toStrictEqual(updateData.name)
+    expect(isValid(new Date(exampleRecord['updated_date'] as string))).toBeTruthy()
     // expect another data unmodified
     const unmodifiedExampleRecord = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[0])
-    expect(unmodifiedExampleRecord.name).toStrictEqual(examples.data[0].name)
-    expect(unmodifiedExampleRecord.updated_date).toBeUndefined()
+    expect(unmodifiedExampleRecord['name']).toStrictEqual(examples.data[0]['name'])
+    expect(unmodifiedExampleRecord['updated_date']).toBeUndefined()
   })
 })

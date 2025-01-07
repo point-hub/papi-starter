@@ -1,7 +1,7 @@
 import type { IDatabase, IPagination, IQuery } from '@point-hub/papi'
 
 import { collectionName } from '../entity'
-import { IRetrieveExampleOutput } from './retrieve.repository'
+import { type IRetrieveExampleOutput } from './retrieve.repository'
 
 export interface IRetrieveAllExampleRepository {
   handle(query: IQuery): Promise<IRetrieveAllExampleOutput>
@@ -12,7 +12,7 @@ export interface IRetrieveAllExampleOutput {
   pagination: IPagination
 }
 
-export class RetrieveAllRepository implements IRetrieveAllExampleRepository {
+export class RetrieveAllExampleRepository implements IRetrieveAllExampleRepository {
   constructor(
     public database: IDatabase,
     public options?: Record<string, unknown>,

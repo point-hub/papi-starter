@@ -15,7 +15,7 @@ export interface IInput {
 
 export interface IDeps {
   schemaValidation: ISchemaValidation
-  updateManyRepository: IUpdateManyExampleRepository
+  updateManyExampleRepository: IUpdateManyExampleRepository
   objClean: IObjClean
 }
 
@@ -40,7 +40,7 @@ export class UpdateManyExampleUseCase {
     exampleEntity.generateDate('updated_date')
     exampleEntity.data = deps.objClean(exampleEntity.data)
     // 3. database operation
-    const response = await deps.updateManyRepository.handle(input.filter, exampleEntity.data)
+    const response = await deps.updateManyExampleRepository.handle(input.filter, exampleEntity.data)
     // 4. output
     return {
       matched_count: response.matched_count,

@@ -1,5 +1,5 @@
-import { IHttpRequest, IMakeControllerInput } from '@point-hub/papi'
-import { NextFunction, Request, Response } from 'express'
+import type { IHttpRequest, IMakeControllerInput } from '@point-hub/papi'
+import type { NextFunction, Request, Response } from 'express'
 
 export const makeController = async (makeControllerInput: IMakeControllerInput) => {
   return async (req: Request, res: Response, next: NextFunction) => {

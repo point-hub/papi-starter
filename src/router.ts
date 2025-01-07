@@ -1,6 +1,6 @@
-import express, { Express } from 'express'
+import express, { type Express } from 'express'
 
-import { IBaseAppInput } from './app'
+import type { IBaseAppInput } from './app'
 import exampleRouter from './modules/examples/router'
 
 export default async function (baseRouterInput: IBaseAppInput) {

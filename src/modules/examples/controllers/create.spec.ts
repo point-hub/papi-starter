@@ -88,7 +88,7 @@ describe('create an example', async () => {
     const exampleRecord = await DatabaseTestUtil.retrieve('examples', response.body.inserted_id)
 
     expect(exampleRecord._id).toStrictEqual(response.body.inserted_id)
-    expect(exampleRecord.name).toStrictEqual(data.name)
-    expect(isValid(new Date(exampleRecord.created_date as string))).toBeTruthy()
+    expect(exampleRecord['name']).toStrictEqual(data.name)
+    expect(isValid(new Date(exampleRecord['created_date'] as string))).toBeTruthy()
   })
 })

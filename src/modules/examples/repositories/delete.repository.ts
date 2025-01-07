@@ -10,7 +10,7 @@ export interface IDeleteExampleOutput {
   deleted_count: number
 }
 
-export class DeleteRepository implements IDeleteExampleRepository {
+export class DeleteExampleRepository implements IDeleteExampleRepository {
   constructor(
     public database: IDatabase,
     public options?: Record<string, unknown>,

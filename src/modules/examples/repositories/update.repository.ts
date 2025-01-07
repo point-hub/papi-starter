@@ -11,7 +11,7 @@ export interface IUpdateExampleOutput {
   modified_count: number
 }
 
-export class UpdateRepository implements IUpdateExampleRepository {
+export class UpdateExampleRepository implements IUpdateExampleRepository {
   constructor(
     public database: IDatabase,
     public options?: Record<string, unknown>,
@@ -20,6 +20,6 @@ export class UpdateRepository implements IUpdateExampleRepository {
   async handle(_id: string, document: IDocument): Promise<IUpdateExampleOutput> {
     return await this.database
       .collection(collectionName)
-      .update(_id, document, { ignoreUndefined: true, ...this.options })
+      .update(_id, { $set: document }, { ignoreUndefined: true, ...this.options })
   }
 }

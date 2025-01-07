@@ -14,7 +14,7 @@ export interface IRetrieveExampleOutput {
   updated_date: string
 }
 
-export class RetrieveRepository implements IRetrieveExampleRepository {
+export class RetrieveExampleRepository implements IRetrieveExampleRepository {
   constructor(
     public database: IDatabase,
     public options?: Record<string, unknown>,
@@ -24,10 +24,10 @@ export class RetrieveRepository implements IRetrieveExampleRepository {
     const response = await this.database.collection(collectionName).retrieve(_id, this.options)
     return {
       _id: response._id,
-      name: response.name as string,
-      phone: response.phone as string,
-      created_date: response.created_date as string,
-      updated_date: response.updated_date as string,
+      name: response['name'] as string,
+      phone: response['phone'] as string,
+      created_date: response['created_date'] as string,
+      updated_date: response['updated_date'] as string,
     }
   }
 }

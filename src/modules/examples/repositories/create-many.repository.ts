@@ -11,7 +11,7 @@ export interface ICreateManyExampleOutput {
   inserted_count: number
 }
 
-export class CreateManyRepository implements ICreateManyExampleRepository {
+export class CreateManyExampleRepository implements ICreateManyExampleRepository {
   constructor(
     public database: IDatabase,
     public options?: Record<string, unknown>,

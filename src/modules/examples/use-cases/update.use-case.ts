@@ -1,7 +1,7 @@
 import type { IObjClean } from '@point-hub/express-utils'
 import type { ISchemaValidation } from '@point-hub/papi'
 
-import { IUniqueValidation } from '@/utils/unique-validation'
+import type { IUniqueValidation } from '@/utils/unique-validation'
 
 import { collectionName, ExampleEntity } from '../entity'
 import type { IUpdateExampleRepository } from '../repositories/update.repository'
@@ -17,7 +17,7 @@ export interface IInput {
 
 export interface IDeps {
   schemaValidation: ISchemaValidation
-  updateRepository: IUpdateExampleRepository
+  updateExampleRepository: IUpdateExampleRepository
   uniqueValidation: IUniqueValidation
   objClean: IObjClean
 }
@@ -41,7 +41,7 @@ export class UpdateExampleUseCase {
     exampleEntity.generateDate('updated_date')
     exampleEntity.data = deps.objClean(exampleEntity.data)
     // 4. database operation
-    const response = await deps.updateRepository.handle(input._id, exampleEntity.data)
+    const response = await deps.updateExampleRepository.handle(input._id, exampleEntity.data)
     // 5. output
     return {
       matched_count: response.matched_count,

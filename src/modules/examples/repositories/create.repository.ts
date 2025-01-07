@@ -10,7 +10,7 @@ export interface ICreateExampleOutput {
   inserted_id: string
 }
 
-export class CreateRepository implements ICreateExampleRepository {
+export class CreateExampleRepository implements ICreateExampleRepository {
   constructor(
     public database: IDatabase,
     public options?: Record<string, unknown>,

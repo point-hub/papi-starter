@@ -5,7 +5,7 @@ export interface IInput {
 }
 
 export interface IDeps {
-  retrieveRepository: IRetrieveExampleRepository
+  retrieveExampleRepository: IRetrieveExampleRepository
 }
 
 export interface IOutput {
@@ -19,7 +19,7 @@ export interface IOutput {
 export class RetrieveExampleUseCase {
   static async handle(input: IInput, deps: IDeps): Promise<IOutput> {
     // 1. database operation
-    const response = await deps.retrieveRepository.handle(input._id)
+    const response = await deps.retrieveExampleRepository.handle(input._id)
     // 2. output
     return {
       _id: response._id,

@@ -114,7 +114,7 @@ describe('example use transaction', async () => {
     // expect recorded data
     const exampleRecords = await DatabaseTestUtil.retrieveAll('examples')
     expect(exampleRecords.data.length).toStrictEqual(4)
-    expect(exampleRecords.data[0].name).toStrictEqual('John 5')
+    expect(exampleRecords.data[0]['name']).toStrictEqual('John 5')
   })
   it('transaction aborted when delete failed', async () => {
     const data = {

@@ -43,7 +43,6 @@ describe('update many examples', async () => {
           phone: '11223344',
         },
       })
-
     // expect http response
     expect(response.statusCode).toEqual(200)
 
@@ -55,16 +54,16 @@ describe('update many examples', async () => {
 
     // expect recorded data
     const exampleRecord1 = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[0])
-    expect(exampleRecord1.phone).toStrictEqual('11223344')
-    expect(isValid(new Date(exampleRecord1.updated_date as string))).toBeTruthy()
+    expect(exampleRecord1['phone']).toStrictEqual('11223344')
+    expect(isValid(new Date(exampleRecord1['updated_date'] as string))).toBeTruthy()
 
     const exampleRecord2 = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[1])
-    expect(exampleRecord2.phone).toStrictEqual('11223344')
-    expect(isValid(new Date(exampleRecord2.updated_date as string))).toBeTruthy()
+    expect(exampleRecord2['phone']).toStrictEqual('11223344')
+    expect(isValid(new Date(exampleRecord2['updated_date'] as string))).toBeTruthy()
 
     // expect unmodified data
     const exampleRecord3 = await DatabaseTestUtil.retrieve('examples', resultFactory.inserted_ids[2])
-    expect(exampleRecord3.phone).toStrictEqual('12345678')
-    expect(isValid(new Date(exampleRecord3.updated_date as string))).toBeFalsy()
+    expect(exampleRecord3['phone']).toStrictEqual('12345678')
+    expect(isValid(new Date(exampleRecord3['updated_date'] as string))).toBeFalsy()
   })
 })

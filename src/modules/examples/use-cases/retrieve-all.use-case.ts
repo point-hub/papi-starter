@@ -8,7 +8,7 @@ export interface IInput {
 }
 
 export interface IDeps {
-  retrieveAllRepository: IRetrieveAllExampleRepository
+  retrieveAllExampleRepository: IRetrieveAllExampleRepository
 }
 
 export interface IOutput {
@@ -24,7 +24,7 @@ export interface IOutput {
 export class RetrieveAllExampleUseCase {
   static async handle(input: IInput, deps: IDeps): Promise<IOutput> {
     // 1. database operation
-    const response = await deps.retrieveAllRepository.handle(input.query)
+    const response = await deps.retrieveAllExampleRepository.handle(input.query)
     // 2. output
     return {
       data: response.data,

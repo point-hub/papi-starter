@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { IBaseAppInput } from '@/app'
+import { type IBaseAppInput } from '@/app'
 import { makeController } from '@/express'
 
 import * as controller from './controllers/index'

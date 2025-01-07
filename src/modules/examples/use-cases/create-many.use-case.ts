@@ -1,7 +1,7 @@
 import type { IObjClean } from '@point-hub/express-utils'
 import type { ISchemaValidation } from '@point-hub/papi'
 
-import { IUniqueValidation } from '@/utils/unique-validation'
+import type { IUniqueValidation } from '@/utils/unique-validation'
 
 import { collectionName, ExampleEntity } from '../entity'
 import type { ICreateManyExampleRepository } from '../repositories/create-many.repository'
@@ -16,7 +16,7 @@ export interface IInput {
 
 export interface IDeps {
   schemaValidation: ISchemaValidation
-  createManyRepository: ICreateManyExampleRepository
+  createManyExampleRepository: ICreateManyExampleRepository
   uniqueValidation: IUniqueValidation
   objClean: IObjClean
 }
@@ -44,7 +44,7 @@ export class CreateManyExampleUseCase {
       entities.push(exampleEntity.data)
     }
     // 4. database operation
-    const response = await deps.createManyRepository.handle(entities)
+    const response = await deps.createManyExampleRepository.handle(entities)
     // 5. output
     return {
       inserted_ids: response.inserted_ids,
