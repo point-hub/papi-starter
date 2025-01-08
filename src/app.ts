@@ -36,6 +36,16 @@ export const createApp = async (appInput: IBaseAppInput) => {
   app.use(express.urlencoded({ extended: true }))
   // Set security HTTP headers
   app.use(helmet())
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", 'https://assets.pointhub.net'],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://assets.pointhub.net'],
+        imgSrc: ["'self'", 'https://assets.pointhub.net'],
+      },
+    }),
+  )
   // Parse cookie
   app.use(cookieParser(cookieConfig.secret))
   // Cors
