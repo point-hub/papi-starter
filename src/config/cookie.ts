@@ -1,5 +1,11 @@
+export interface ICookieConfig {
+  secret: string
+}
+
 export const secret = process.env['COOKIE_SECRET'] ?? ''
 
-export default {
+const cookieConfig: ICookieConfig = {
   secret,
 }
+
+export default cookieConfig
