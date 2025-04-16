@@ -5,6 +5,7 @@ export const makeController = async (makeControllerInput: IMakeControllerInput) 
   return async (req: Request, res: Response, next: NextFunction) => {
     const httpRequest: IHttpRequest = {
       body: req.body,
+      files: req.files,
       query: req.query,
       params: req.params,
       ip: req.ip,
