@@ -98,7 +98,7 @@ bun cli db:init
 #### Seed Default Database
 
 ```bash
-bun cli db:seed
+bun cli db:default
 ```
 
 ### Testing
