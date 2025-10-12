@@ -51,7 +51,7 @@ export const createApp = async (appInput: IBaseAppInput) => {
   // Cors
   app.use(
     cors({
-      origin: corsConfig.origin,
+      origin: corsConfig.origin.split(','),
       credentials: corsConfig.credentials,
     }),
   )

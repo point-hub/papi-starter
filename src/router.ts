@@ -1,7 +1,9 @@
 import express, { type Express, type Request, type Response } from 'express'
 
 import type { IBaseAppInput } from './app'
-import exampleRouter from './modules/examples/router'
+import healthRouter from './modules/health/router'
+import masterExampleRouter from './modules/master/examples/router'
+import transactionModuleExampleRouter from './modules/transaction/module-examples/router'
 import { renderHbsTemplate } from './utils/email'
 
 export default async function (baseRouterInput: IBaseAppInput) {
@@ -11,7 +13,9 @@ export default async function (baseRouterInput: IBaseAppInput) {
    * Register all available modules
    * <modules>/router.ts
    */
-  app.use('/v1/examples', await exampleRouter(baseRouterInput))
+  app.use('/v1/health', await healthRouter(baseRouterInput))
+  app.use('/v1/master/examples', await masterExampleRouter(baseRouterInput))
+  app.use('/v1/transaction/module-examples', await transactionModuleExampleRouter(baseRouterInput))
 
   /**
    * Rendered email templates

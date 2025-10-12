@@ -1,0 +1,119 @@
+@baseUrl = {{$dotenv BASE_URL}}
+
+###
+# @name createExample
+# @prompt name
+# @prompt phone
+POST {{baseUrl}}/v1/master/examples HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "{{name}}",
+  "phone": "{{phone}}"
+}
+
+###
+# @name createManyExample
+# @prompt name1
+# @prompt phone1
+# @prompt name2
+# @prompt phone2
+POST {{baseUrl}}/v1/master/examples/create-many HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+[
+  {
+    "name": "{{name1}}",
+    "phone": "{{phone1}}"  
+  },
+  {
+    "name": "{{name2}}",
+    "phone": "{{phone2}}"  
+  }
+]
+
+###
+# @name retrieveAllExample
+GET {{baseUrl}}/v1/master/examples HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+###
+# @name retrieveExample
+# @prompt id
+GET {{baseUrl}}/v1/master/examples/{{id}} HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+###
+# @name updateExample
+# @prompt id
+# @prompt name
+# @prompt phone
+PATCH {{baseUrl}}/v1/master/examples/{{id}} HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "{{name}}",
+  "phone": "{{phone}}"
+}
+
+###
+# @name updateManyExample
+# @prompt name
+# @prompt phone
+POST {{baseUrl}}/v1/master/examples/update-many HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "filter": {
+    "name": "{{name}}"
+  },
+  "data": {
+    "phone": "{{phone}}"
+  }
+}
+
+###
+# @name deleteExample
+# @prompt id
+DELETE {{baseUrl}}/v1/master/examples/{{id}} HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+###
+# @name deleteManyExample
+# @prompt id1
+# @prompt id2
+POST {{baseUrl}}/v1/master/examples/delete-many HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ids": ["{{id1}}","{{id2}}"]
+}
+
+###
+# @name createTransactionExample
+# @prompt name1
+# @prompt phone1
+# @prompt name2
+# @prompt phone2
+POST {{baseUrl}}/v1/master/examples/transaction HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "data1": {
+    "name": "{{name1}}",
+    "phone": "{{phone1}}"  
+  },
+  "data2": {
+    "name": "{{name2}}",
+    "phone": "{{phone2}}"  
+  }
+}
