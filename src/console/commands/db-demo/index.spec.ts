@@ -1,11 +1,11 @@
-import { expect, it, spyOn } from 'bun:test'
+import { expect, it, spyOn } from 'bun:test';
 
-import SeedCommand from './index.command'
+import SeedCommand from './index.command';
 
 it('test command', async () => {
-  const seedCommand = new SeedCommand()
-  const spy = spyOn(seedCommand, 'handle')
-  await seedCommand.handle()
+  const seedCommand = new SeedCommand();
+  const spy = spyOn(seedCommand, 'handle');
+  await seedCommand.handle();
 
-  expect(spy).toHaveBeenCalled()
-})
+  expect(spy).toHaveBeenCalled();
+});

@@ -1,21 +1,21 @@
-import type { IBaseRouterInput } from '@point-hub/papi'
-import { BaseErrorHandler } from '@point-hub/papi'
-import compression from 'compression'
-import cookieParser from 'cookie-parser'
-import cors from 'cors'
-import express from 'express'
-import helmet from 'helmet'
+import type { IBaseRouterInput } from '@point-hub/papi';
+import { BaseErrorHandler } from '@point-hub/papi';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
 
-import cookieConfig from '@/config/cookie'
-import corsConfig from '@/config/cors'
+import cookieConfig from '@/config/cookie';
+import corsConfig from '@/config/cors';
 
-import router from './router'
+import router from './router';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IBaseAppInput extends IBaseRouterInput {}
 
 export const createApp = async (appInput: IBaseAppInput) => {
-  const app = express()
+  const app = express();
 
   /**
    * Get Client IP
@@ -27,15 +27,15 @@ export const createApp = async (appInput: IBaseAppInput) => {
    * Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
    * see https://expressjs.com/en/guide/behind-proxies.html
    */
-  app.set('trust proxy', true)
+  app.set('trust proxy', true);
   // Gzip compressing can greatly decrease the size of the response body
-  app.use(compression())
+  app.use(compression());
   // Parse json request body
-  app.use(express.json())
+  app.use(express.json());
   // Parse urlencoded request body
-  app.use(express.urlencoded({ extended: true }))
+  app.use(express.urlencoded({ extended: true }));
   // Set security HTTP headers
-  app.use(helmet())
+  app.use(helmet());
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
@@ -45,34 +45,34 @@ export const createApp = async (appInput: IBaseAppInput) => {
         imgSrc: ["'self'", 'https://assets.pointhub.net'],
       },
     }),
-  )
+  );
   // Parse cookie
-  app.use(cookieParser(cookieConfig.secret))
+  app.use(cookieParser(cookieConfig.secret));
   // Cors
   app.use(
     cors({
       origin: corsConfig.origin.split(','),
       credentials: corsConfig.credentials,
     }),
-  )
+  );
 
   /**
    * Static Assets
    *
    * All files must be placed in the src/assets folder, to be publicly accessible in the /assets path.
    */
-  app.use('/assets', express.static('src/assets'))
+  app.use('/assets', express.static('src/assets'));
 
   /**
    * API Routes
    *
    * Here is where you can register API routes for your application.
    */
-  app.use('/', await router(appInput))
+  app.use('/', await router(appInput));
 
-  app.use(BaseErrorHandler.invalidPathMiddleware)
+  app.use(BaseErrorHandler.invalidPathMiddleware);
 
-  app.use(BaseErrorHandler.errorHandlerMiddleware)
+  app.use(BaseErrorHandler.errorHandlerMiddleware);
 
-  return app
-}
+  return app;
+};

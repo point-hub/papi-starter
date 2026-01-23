@@ -1,42 +1,43 @@
-import type { IHttpRequest, IMakeControllerInput } from '@point-hub/papi'
-import type { NextFunction, Request, Response } from 'express'
+import 'express';
 
-export const makeController = async (makeControllerInput: IMakeControllerInput) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const httpRequest: IHttpRequest = {
-      body: req.body,
-      files: req.files,
-      query: req.query,
-      params: req.params,
-      ip: req.ip,
-      method: req.method,
-      path: req.path,
-      cookies: req.cookies,
-      signedCookies: req.signedCookies,
-      headers: {
-        Accept: req.get('Accept'),
-        Authorization: req.get('Authorization'),
-        'Content-Type': req.get('Content-Type'),
-        'User-Agent': req.get('User-Agent'),
-      },
-    }
+import type { IMakeControllerInput, IMakeMiddlewareInput } from '@point-hub/papi';
+import type { NextFunction, Request, Response } from 'express';
 
-    try {
-      const response = await makeControllerInput.controller({
-        httpRequest,
-        dbConnection: makeControllerInput.dbConnection,
-      })
-      res.status(response.status)
-      if (response.cookies) {
-        for (const cookie of response.cookies) {
-          res.cookie(cookie.name, cookie.val, cookie.options)
-        }
-      }
-      if (response.json) {
-        res.json(response.json)
-      }
-    } catch (error) {
-      next(error)
-    }
+import type { IAuthUser } from './modules/master/users/interface';
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    authUser: IAuthUser
   }
 }
+
+export const makeController = (makeControllerInput: IMakeControllerInput) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await makeControllerInput.controller({
+        req,
+        res,
+        next,
+        dbConnection: makeControllerInput.dbConnection,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+};
+
+export const makeMiddleware = (makeMiddlewareInput: IMakeMiddlewareInput) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await makeMiddlewareInput.middleware({
+        req,
+        res,
+        next,
+        dbConnection: makeMiddlewareInput.dbConnection,
+      });
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+};

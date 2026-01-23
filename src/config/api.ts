@@ -3,9 +3,9 @@ export interface IApiConfig {
   clientUrl: string
 }
 
-export const baseUrl = `${process.env['BASE_URL']}`
-export const clientUrl = `${process.env['CLIENT_URL']}`
+export const baseUrl = `${process.env['BASE_URL']}`;
+export const clientUrl = `${process.env['CLIENT_URL']}`;
 
-const apiConfig: IApiConfig = { baseUrl, clientUrl }
+const apiConfig: IApiConfig = { baseUrl, clientUrl };
 
-export default apiConfig
+export default apiConfig;

@@ -1,31 +1,41 @@
-import { faker } from '@faker-js/faker'
-import { BaseFactory, type IDatabase } from '@point-hub/papi'
+import { faker } from '@faker-js/faker';
+import { BaseFactory, type IDatabase } from '@point-hub/papi';
 
-import { type IExampleEntity } from './interface'
-import { CreateExampleRepository } from './repositories/create.repository'
-import { CreateManyExampleRepository } from './repositories/create-many.repository'
+import { type IExample } from './interface';
+import { CreateRepository } from './repositories/create.repository';
+import { CreateManyRepository } from './repositories/create-many.repository';
 
-export default class ExampleFactory extends BaseFactory<IExampleEntity> {
-  constructor(public dbConnection: IDatabase) {
-    super()
+export default class ExampleFactory extends BaseFactory<IExample> {
+  constructor(public dbConnection: IDatabase, public options?: Record<string, unknown>) {
+    super();
   }
 
   definition() {
     return {
+      code: 'EXAMPLE/' + faker.number.int({ min: 1, max: 99999 }).toString().padStart(5, '0'),
       name: faker.person.fullName(),
       age: faker.number.int({ min: 25, max: 99 }),
-      nationality: { label: 'Indonesia', value: 'ID' },
+      gender: faker.person.gender(),
+      composite_unique_1: faker.person.fullName(),
+      composite_unique_2: faker.person.fullName(),
+      notes: faker.lorem.words(),
+      optional_unique: faker.person.fullName(),
+      optional_composite_unique_1: faker.person.fullName(),
+      optional_composite_unique_2: faker.person.fullName(),
+      xxx_composite_unique_1: faker.person.fullName(),
+      xxx_composite_unique_2: faker.person.fullName(),
       created_at: new Date(),
-    }
+      created_by_id: undefined, // injected
+    } as IExample;
   }
 
   async create() {
-    const createRepository = new CreateExampleRepository(this.dbConnection)
-    return await createRepository.handle(this.makeOne())
+    const createRepository = new CreateRepository(this.dbConnection, this.options);
+    return await createRepository.handle(this.makeOne());
   }
 
   async createMany(count: number) {
-    const createManyRepository = new CreateManyExampleRepository(this.dbConnection)
-    return await createManyRepository.handle(this.makeMany(count))
+    const createManyRepository = new CreateManyRepository(this.dbConnection, this.options);
+    return await createManyRepository.handle(this.makeMany(count));
   }
 }

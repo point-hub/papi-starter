@@ -1,8 +1,0 @@
-export { CreateModuleExampleRepository } from './create.repository'
-export { CreateManyModuleExampleRepository } from './create-many.repository'
-export { DeleteModuleExampleRepository } from './delete.repository'
-export { DeleteManyModuleExampleRepository } from './delete-many.repository'
-export { RetrieveModuleExampleRepository } from './retrieve.repository'
-export { RetrieveAllModuleExampleRepository } from './retrieve-all.repository'
-export { UpdateModuleExampleRepository } from './update.repository'
-export { UpdateManyModuleExampleRepository } from './update-many.repository'

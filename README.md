@@ -9,7 +9,6 @@
 - [Bun Test](https://bun.sh/guides/test) for unit testing
 - [Supertest](https://www.npmjs.com/package/supertest) for e2e testing
 - [ESLint](https://eslint.org) for code linting
-- [Prettier](https://prettier.io) for code formatting
 - [Husky](https://typicode.github.io/husky) for check your commit
 
 ## Services
@@ -26,18 +25,17 @@ PAPI-STARTER
 │   ├── console
 │   ├── database
 │   ├── modules
-│   │   └── example
-│   │       ├── controllers
-│   │       ├── repositories
-│   │       ├── rest
-│   │       ├── use-cases
-│   │       ├── validations
-│   │       ├── entity.ts
-│   │       ├── factory.ts
-│   │       ├── interface.ts
-│   │       ├── router.ts
-│   │       ├── schema.ts
-│   │       └── seed.ts
+│   │   ├── master
+│   │   │   └── examples
+│   │   │       ├── controllers
+│   │   │       ├── repositories
+│   │   │       ├── rules
+│   │   │       ├── use-cases
+│   │   │       ├── entity.ts
+│   │   │       ├── factory.ts
+│   │   │       ├── interface.ts
+│   │   │       ├── router.ts
+│   │   │       └── schema.ts
 │   └── test
 │       ├── setup.ts
 │       └── utils.ts
@@ -109,15 +107,27 @@ Testing all test case
 bun test
 ```
 
-Testing specific file or folder
+Testing coverage
 
 ```bash
+bun test:coverage
+```
+
+Testing report
+
+```bash
+bun test:report
+```
+
+Testing specific file or directory
+
+```bash
+# Test specific directory
+bun test src/modules/master/examples/controllers
+
 # Test specific file
-bun test -- src/modules/examples/controller/create.spec
+bun test src/modules/master/examples/controllers/create.spec
 
-# Test specific folder
-bun test -- src/modules/examples/controller
-
-# Test example module
-bun test -- src/modules/examples
+# Test specific test case
+bun test src/modules/master/examples/controllers/create.spec -t "test case"
 ```

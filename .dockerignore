@@ -3,6 +3,7 @@ node_modules
 
 # test coverage directory
 coverage
+test-reports
 
 # envorinment variable
 .env

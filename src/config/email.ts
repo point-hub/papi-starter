@@ -2,10 +2,10 @@ export interface IEmailConfig {
   endpoint: string
 }
 
-export const endpoint = process.env['EMAIL_ENDPOINT'] ?? ''
+export const endpoint = process.env['EMAIL_ENDPOINT'] ?? '';
 
 const emailConfig: IEmailConfig = {
   endpoint,
-}
+};
 
-export default emailConfig
+export default emailConfig;
