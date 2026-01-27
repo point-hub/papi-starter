@@ -6,7 +6,7 @@ import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
 import type { IAblyService } from '@/modules/ably/services/ably.service';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 
-import { collectionName, UserEntity } from '../entity';
+import { collectionName, redactFields, UserEntity } from '../entity';
 import type { IAuthUser } from '../interface';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
@@ -90,6 +90,7 @@ export class UpdateEmailUseCase extends BaseUseCase<IInput, IDeps, ISuccessData>
     const changes = this.deps.auditLogService.buildChanges(
       retrieveResponse,
       this.deps.auditLogService.mergeDefined(retrieveResponse, userEntity.data),
+      { redactFields },
     );
     if (changes.summary.fields?.length === 0) {
       return this.fail({ code: 400, message: 'No changes detected. Please modify at least one field before saving.' });

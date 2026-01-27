@@ -4,7 +4,7 @@ import type { IEmailService } from '@/modules/_shared/services/email.service';
 import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 
-import { collectionName, UserEntity } from '../entity';
+import { collectionName, redactFields, UserEntity } from '../entity';
 import type { IIdentityMatcherRepository } from '../repositories/identity-matcher.repository';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
@@ -74,6 +74,7 @@ export class RequestPasswordUseCase extends BaseUseCase<IInput, IDeps, void> {
     const changes = this.deps.auditLogService.buildChanges(
       retrieveResponse,
       this.deps.auditLogService.mergeDefined(retrieveResponse, userEntity.data),
+      { redactFields },
     );
     if (changes.summary.fields?.length === 0) {
       return this.fail({ code: 400, message: 'No changes detected. Please modify at least one field before saving.' });

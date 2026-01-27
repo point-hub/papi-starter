@@ -3,7 +3,7 @@ import { BaseUseCase, type IUseCaseOutputFailed, type IUseCaseOutputSuccess } fr
 import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 
-import { collectionName, UserEntity } from '../entity';
+import { collectionName, redactFields, UserEntity } from '../entity';
 import type { IResetPasswordRepository } from '../repositories/reset-password.repository';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IRetrieveManyRepository } from '../repositories/retrieve-many.repository';
@@ -74,6 +74,7 @@ export class ResetPasswordUseCase extends BaseUseCase<IInput, IDeps, ISuccessDat
     const changes = this.deps.auditLogService.buildChanges(
       retrieveResponse,
       this.deps.auditLogService.mergeDefined(retrieveResponse, userEntity.data),
+      { redactFields },
     );
     if (changes.summary.fields?.length === 0) {
       return this.fail({ code: 400, message: 'No changes detected. Please modify at least one field before saving.' });
