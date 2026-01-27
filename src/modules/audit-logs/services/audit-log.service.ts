@@ -90,7 +90,23 @@ export class AuditLogService implements IAuditLogService {
   ) { }
 
   private isPlainObject(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
+    if (typeof value !== 'object' || value === null) return false;
+
+    // Exclude arrays
+    if (Array.isArray(value)) return false;
+
+    // Exclude special objects (Date, Map, Set, RegExp, etc.)
+    if (
+      value instanceof Date ||
+      value instanceof Map ||
+      value instanceof Set ||
+      value instanceof RegExp
+    ) {
+      return false;
+    }
+
+    // Only plain object literals or objects created with `new Object()`
+    return Object.getPrototypeOf(value) === Object.prototype;
   }
 
   private flattenObject(
