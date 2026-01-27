@@ -36,11 +36,11 @@ export interface ISuccessData {
  * - Mark the user's email as verified in the repository.
  * - Return a success response.
  */
-export class VerifyEmailUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
+export class VerifyNewEmailUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
   async handle(input: IInput): Promise<IUseCaseOutputSuccess<ISuccessData> | IUseCaseOutputFailed> {
     // Validate that the verification code is valid and corresponds to an existing user.
     const userResponse = await this.deps.retrieveManyRepository.handle({
-      filter: { 'email_verification.code': input.filter.code },
+      filter: { 'new_email_verification.code': input.filter.code },
     });
     if (userResponse.data.length === 0) {
       return this.fail({
@@ -60,12 +60,13 @@ export class VerifyEmailUseCase extends BaseUseCase<IInput, IDeps, ISuccessData>
 
     // Normalizes data (trim).
     const userEntity = new UserEntity({
+      new_email: null,
+      trimmed_new_email: null,
+      new_email_verification: null,
+      email: retrieveResponse.new_email!,
+      trimmed_email: retrieveResponse.trimmed_new_email!,
       email_verification: {
-        is_verified: true,
         verified_at: new Date(),
-        requested_at: null,
-        code: null,
-        url: null,
       },
     });
 

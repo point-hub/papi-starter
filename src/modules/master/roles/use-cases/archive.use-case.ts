@@ -11,9 +11,9 @@ import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
 
 export interface IInput {
+  ip: string
   authUser: IAuthUser
   userAgent: IUserAgent
-  ip: string
   filter: {
     _id: string
   }
@@ -83,7 +83,7 @@ export class ArchiveUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       actor_id: input.authUser._id,
       actor_name: input.authUser.username,
       action: 'archive',
-      module: 'role',
+      module: 'roles',
       system_reason: 'update data',
       user_reason: input.data?.update_reason,
       changes: changes,

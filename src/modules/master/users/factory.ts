@@ -26,6 +26,7 @@ export default class UserFactory extends BaseFactory<IUser> {
         verified_at: new Date(),
       },
       role_id: undefined, // inject
+      is_archived: false,
       created_at: new Date(),
     };
   }

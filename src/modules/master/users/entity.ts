@@ -30,4 +30,23 @@ export class UserEntity {
     // combine prefix and domain
     this.data.trimmed_email = `${prefix.toLocaleLowerCase()}@${domain.toLocaleLowerCase()}`;
   }
+
+  public trimmedNewEmail() {
+    if (!this.data.new_email) {
+      return;
+    }
+    // separate prefix / username and domain
+    let prefix = this.data.new_email.split('@')[0];
+    const domain = this.data.new_email.split('@')[1];
+    if (!domain) {
+      return;
+    }
+    // remove dot
+    prefix = prefix.split('.').join('');
+    // remove email subaddressing, also known as plus sign (+) trick,
+    // is popularized by Gmail and now supported by most email providers
+    prefix = prefix.split('+')[0];
+    // combine prefix and domain
+    this.data.trimmed_new_email = `${prefix.toLocaleLowerCase()}@${domain.toLocaleLowerCase()}`;
+  }
 }

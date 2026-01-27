@@ -49,6 +49,14 @@ export const schema: ISchema[] = [
           bsonType: 'string',
           description: 'A normalized email used for uniqueness checks (ignores dots and "+").',
         },
+        new_email: {
+          bsonType: 'string',
+          description: 'The updated email address of the user.',
+        },
+        trimmed_new_email: {
+          bsonType: 'string',
+          description: 'A normalized updated email used for uniqueness checks (ignores dots and "+").',
+        },
         avatar_url: {
           bsonType: 'string',
           description: 'URL of the user’s avatar image.',
@@ -62,6 +70,31 @@ export const schema: ISchema[] = [
           description: 'The notes of the user.',
         },
         email_verification: {
+          bsonType: 'object',
+          properties: {
+            code: {
+              bsonType: 'string',
+              description: 'The verification code used to confirm the user’s email.',
+            },
+            url: {
+              bsonType: 'string',
+              description: 'Verification URL sent to the user.',
+            },
+            requested_at: {
+              bsonType: 'date',
+              description: 'When the verification was requested.',
+            },
+            is_verified: {
+              bsonType: 'bool',
+              description: 'Whether the email has been verified.',
+            },
+            verified_at: {
+              bsonType: 'date',
+              description: 'When the email was verified.',
+            },
+          },
+        },
+        new_email_verification: {
           bsonType: 'object',
           properties: {
             code: {

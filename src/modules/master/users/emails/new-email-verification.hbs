@@ -1,0 +1,23 @@
+{{>header}}
+
+<table role="presentation" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+  <tr>
+    <td style="padding: 40px; font-size: 16px; color: #2d3748;">
+      <h2 style="margin: 0;">New Email Verification</h2>
+      <p style="margin-top: 10px; line-height: 1.6;">You’ve requested to update your email address.</p>
+      <p style="margin-top: 10px; line-height: 1.6;">Please verify your new email by clicking the link below.</p>
+      <p style="margin-top: 10px; line-height: 1.6;">Until the verification is completed, your account will continue using your current (old) email</p>
+      <p style="margin-top: 20px;">
+        <a href="{{url}}?code={{code}}" target="_blank" class="button" style="text-decoration: none; display: inline-block; padding: 10px 20px; background-color: #3182ce; color: #ffffff; border-radius: 5px; text-align: center;">
+          Verify Email
+        </a>
+      </p>
+      <p style="margin-top: 10px; line-height: 1.6;">If the button is not working, please copy and paste this URL into your browser: <a href="{{url}}?code={{code}}" target="_blank">{{url}}?code={{code}}</a></p>
+      <p style="margin-top: 10px; line-height: 1.6;">If you didn’t request this change, you can safely ignore this email.</a></p>
+      <p style="margin-top: 20px; line-height: 1.6;">Best Regards,</p>
+      <p>Pointhub</p>
+    </td>
+  </tr>
+</table>
+
+{{>footer}}

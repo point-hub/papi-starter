@@ -1,4 +1,4 @@
 export const updatePasswordRules = {
   current_password: ['required', 'string'],
-  password: ['required', 'string', 'min:8'],
+  new_password: ['required', 'string', 'min:8'],
 };

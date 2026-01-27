@@ -16,6 +16,7 @@ export default class RoleFactory extends BaseFactory<IRole> {
       name: faker.person.fullName(),
       notes: faker.lorem.words(),
       permissions: undefined, // injected
+      is_archived: false,
       created_at: new Date(),
       created_by_id: undefined, // injected
     } as IRole;

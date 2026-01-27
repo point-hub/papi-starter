@@ -1,12 +1,18 @@
 import { BaseUseCase, type IUseCaseOutputFailed, type IUseCaseOutputSuccess } from '@point-hub/papi';
 
 import type { IEmailService } from '@/modules/_shared/services/email.service';
+import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
+import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 
+import { collectionName, UserEntity } from '../entity';
 import type { IIdentityMatcherRepository } from '../repositories/identity-matcher.repository';
+import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
 import type { IEmailVerificationService } from '../services/email-verification.service';
 
 export interface IInput {
+  ip: string
+  userAgent: IUserAgent
   filter: {
     username: string
   }
@@ -14,7 +20,9 @@ export interface IInput {
 
 export interface IDeps {
   identityMatcherRepository: IIdentityMatcherRepository
+  retrieveRepository: IRetrieveRepository
   updateRepository: IUpdateRepository
+  auditLogService: IAuditLogService
   emailService: IEmailService
   emailVerificationService: IEmailVerificationService
 }
@@ -45,14 +53,45 @@ export class SendEmailVerificationUseCase extends BaseUseCase<IInput, IDeps, ISu
     // Generate a new email verification link and code.
     const linkEmailVerification = this.deps.emailVerificationService.generate();
 
-    // Update the user's record with the verification data.
-    const response = await this.deps.updateRepository.handle(users.data[0]._id, {
+    // Normalizes data (trim).
+    const userEntity = new UserEntity({
       email_verification: {
         requested_at: new Date(),
         code: linkEmailVerification.code,
         url: linkEmailVerification.url,
       },
     });
+
+    // Check if the record exists
+    const retrieveResponse = await this.deps.retrieveRepository.raw(users.data[0]._id);
+    if (!retrieveResponse) {
+      return this.fail({ code: 404, message: 'Resource not found' });
+    }
+
+    // Update the user's record with the verification data.
+    const response = await this.deps.updateRepository.handle(users.data[0]._id, userEntity.data);
+
+    // Create an audit log entry for this operation.
+    const changes = this.deps.auditLogService.buildChanges(retrieveResponse, userEntity.data, { redactFields: ['password', 'email_verification.code'] });
+    const dataLog = {
+      operation_id: this.deps.auditLogService.generateOperationId(),
+      entity_type: collectionName,
+      entity_id: retrieveResponse._id!,
+      entity_ref: `${retrieveResponse.username}`,
+      actor_type: 'anonymous',
+      action: 'send-email-verification',
+      module: 'users',
+      system_reason: 'generate email verification code',
+      changes: changes,
+      metadata: {
+        ip: input.ip,
+        device: input.userAgent.device,
+        browser: input.userAgent.browser,
+        os: input.userAgent.os,
+      },
+      created_at: new Date(),
+    };
+    await this.deps.auditLogService.log(dataLog);
 
     // Send an email containing the verification link and code.
     await this.deps.emailService.send(

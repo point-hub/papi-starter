@@ -6,6 +6,8 @@ export interface IUser {
   trimmed_username?: string
   email?: string
   trimmed_email?: string
+  new_email?: string | null
+  trimmed_new_email?: string | null
   avatar_url?: string
   notes?: string | null
   password?: string
@@ -16,6 +18,13 @@ export interface IUser {
     is_verified?: boolean
     verified_at?: Date | null
   }
+  new_email_verification?: {
+    code?: string | null
+    url?: string | null
+    requested_at?: Date | null
+    is_verified?: boolean
+    verified_at?: Date | null
+  } | null
   request_password?: {
     requested_at?: Date | null
     code?: string | null

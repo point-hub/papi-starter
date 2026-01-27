@@ -1,6 +1,7 @@
-import { isEmpty } from '@point-hub/express-utils';
 import { type IDatabase } from '@point-hub/papi';
 import { randomUUIDv7 } from 'bun';
+
+type FieldPath<T> = keyof T | `${string}.${string}`;
 
 export interface IData {
   activity_log_id?: string
@@ -73,8 +74,8 @@ export interface IAuditLogService {
     before: Partial<T>,
     after: Partial<T>,
     options?: {
-      ignoreFields?: (keyof T)[]
-      redactFields?: (keyof T)[]
+      ignoreFields?: FieldPath<T>[]
+      redactFields?: FieldPath<T>[]
       redactValue?: unknown
     },
   ): IBuildChangesResult<T>
@@ -89,6 +90,28 @@ export class AuditLogService implements IAuditLogService {
     public database: IDatabase,
     public options?: Record<string, unknown>,
   ) { }
+
+  private isPlainObject(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  private flattenObject(
+    obj: Record<string, unknown>,
+    prefix = '',
+    result: Record<string, unknown> = {},
+  ): Record<string, unknown> {
+    for (const [key, value] of Object.entries(obj)) {
+      const path = prefix ? `${prefix}.${key}` : key;
+
+      if (this.isPlainObject(value)) {
+        this.flattenObject(value, path, result);
+      } else {
+        result[path] = value;
+      }
+    }
+
+    return result;
+  }
 
   async log(data: IData): Promise<ICreateResponse> {
     const response = await this.database.collection('audit_logs').create({
@@ -158,60 +181,56 @@ export class AuditLogService implements IAuditLogService {
     return result;
   }
 
-
   buildChanges<T extends object>(
     before: Partial<T>,
     after: Partial<T>,
     options?: {
-      ignoreFields?: (keyof T)[]
-      redactFields?: (keyof T)[]
+      ignoreFields?: FieldPath<T>[]
+      redactFields?: FieldPath<T>[]
       redactValue?: unknown
     },
   ): IBuildChangesResult<T> {
-    const ignore = new Set<keyof T>(options?.ignoreFields ?? []);
-    const redact = new Set<keyof T>(options?.redactFields ?? []);
+    const ignore = new Set<string>((options?.ignoreFields ?? []).map(String));
+    const redact = new Set<string>((options?.redactFields ?? []).map(String));
     const redactValue = options?.redactValue ?? '[REDACTED]';
 
-    const fields = new Set<keyof T>();
+    const fields = new Set<string>();
 
-    if (!isEmpty(before) && !isEmpty(after)) {
-      for (const key of Object.keys(after) as (keyof T)[]) {
-        if (ignore.has(key)) continue;
-        if (before[key] === undefined && after[key] === undefined) continue;
-        if (before[key] !== after[key]) {
-          fields.add(key);
-        }
-      }
-    }
+    const flatBefore = this.isPlainObject(before)
+      ? this.flattenObject(before as Record<string, unknown>)
+      : {};
 
-    if (isEmpty(before) && !isEmpty(after)) {
-      for (const key of Object.keys(after) as (keyof T)[]) {
-        if (after[key] === undefined) continue;
-        if (ignore.has(key)) continue;
-        fields.add(key);
-      }
-    }
+    const flatAfter = this.isPlainObject(after)
+      ? this.flattenObject(after as Record<string, unknown>)
+      : {};
 
-    if (!isEmpty(before) && isEmpty(after)) {
-      for (const key of Object.keys(before) as (keyof T)[]) {
-        if (before[key] === undefined) continue;
-        if (ignore.has(key)) continue;
+    const allKeys = new Set([
+      ...Object.keys(flatBefore),
+      ...Object.keys(flatAfter),
+    ]);
+
+    for (const key of allKeys) {
+      if (ignore.has(key)) continue;
+
+      const beforeValue = flatBefore[key];
+      const afterValue = flatAfter[key];
+
+      if (beforeValue !== afterValue) {
         fields.add(key);
       }
     }
 
     return {
       summary: {
-        fields: Array.from(fields).map(String),
+        fields: Array.from(fields),
         count: fields.size,
       },
       snapshot: {
-        before: this.redactSnapshot(before, redact, redactValue),
-        after: this.redactSnapshot(after, redact, redactValue),
+        before: this.redactSnapshot(flatBefore, redact, redactValue) as Partial<T>,
+        after: this.redactSnapshot(flatAfter, redact, redactValue) as Partial<T>,
       },
     };
   }
-
 
   mergeDefined<T extends object>(
     base: T,

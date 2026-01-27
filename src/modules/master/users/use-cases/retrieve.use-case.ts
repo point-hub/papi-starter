@@ -37,7 +37,6 @@ export class RetrieveUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
   async handle(input: IInput): Promise<IUseCaseOutputSuccess<ISuccessData> | IUseCaseOutputFailed> {
     // Retrieve a single data record from the database.
     const response = await this.deps.retrieveRepository.handle(input._id);
-
     if (!response) return this.fail({
       code: 404,
       message: 'The requested data does not exist.',

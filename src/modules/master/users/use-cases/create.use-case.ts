@@ -14,9 +14,9 @@ import type { IEmailVerificationService } from '../services/email-verification.s
 import type { IPasswordService } from '../services/password.service';
 
 export interface IInput {
+  ip: string
   authUser: IAuthUser
   userAgent: IUserAgent
-  ip: string
   data: {
     username: string
     name: string
@@ -82,6 +82,7 @@ export class CreateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
         code: linkEmailVerification.code,
         url: linkEmailVerification.url,
       },
+      is_archived: false,
       created_at: new Date(),
       created_by_id: input.authUser._id,
     });
@@ -117,9 +118,21 @@ export class CreateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
     // Save the data to the database.
     const createResponse = await this.deps.createRepository.handle(userEntity.data);
 
-    // Create an audit log entry for this operation.
-    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields: ['password'] });
+    // Send the email verification message to the user.
+    await this.deps.emailService.send(
+      {
+        to: userEntity.data.email as string,
+        subject: 'Please verify your email address',
+        template: 'modules/master/users/emails/email-verification.hbs',
+        context: {
+          code: linkEmailVerification.code,
+          url: linkEmailVerification.url,
+        },
+      },
+    );
 
+    // Create an audit log entry for this operation.
+    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields: ['password', 'email_verification.code'] });
     const dataLog = {
       operation_id: this.deps.auditLogService.generateOperationId(),
       entity_type: collectionName,
@@ -129,7 +142,7 @@ export class CreateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       actor_id: input.authUser._id,
       actor_name: input.authUser.username,
       action: 'create',
-      module: 'user',
+      module: 'users',
       system_reason: 'insert data',
       changes: changes,
       metadata: {

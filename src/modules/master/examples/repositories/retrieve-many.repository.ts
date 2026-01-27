@@ -89,6 +89,9 @@ export class RetrieveManyRepository implements IRetrieveManyRepository {
     // Apply numeric filter using the helper function
     BaseMongoDBQueryFilters.addNumberFilter(filters, 'age', query?.['search.age']);
 
+    // Filter boolean
+    BaseMongoDBQueryFilters.addBooleanFilter(filters, 'is_archived', query?.['search.is_archived']);
+
     return filters.length > 0 ? [{ $match: { $and: filters } }] : [];
   }
 

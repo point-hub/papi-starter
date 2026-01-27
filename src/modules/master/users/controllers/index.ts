@@ -18,6 +18,8 @@ export { updateController } from './update.controller';
 export { updateEmailController } from './update-email.controller';
 export { updateLastSeenController } from './update-last-seen.controller';
 export { updatePasswordController } from './update-password.controller';
+export { updateUsernameController } from './update-username.controller';
 export { verifyEmailController } from './verify-email.controller';
+export { verifyNewEmailController } from './verify-new-email.controller';
 export { verifyPasswordController } from './verify-password.controller';
 export { verifyTokenController } from './verify-token.controller';

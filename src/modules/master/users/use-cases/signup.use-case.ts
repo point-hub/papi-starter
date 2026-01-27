@@ -13,8 +13,8 @@ import type { IEmailVerificationService } from '../services/email-verification.s
 import type { IPasswordService } from '../services/password.service';
 
 export interface IInput {
-  userAgent: IUserAgent
   ip: string
+  userAgent: IUserAgent
   data: {
     name: string
     username: string
@@ -83,6 +83,7 @@ export class SignupUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
         code: linkEmailVerification.code,
         url: linkEmailVerification.url,
       },
+      is_archived: false,
       created_at: new Date(),
     });
     userEntity.trimmedEmail();
@@ -140,7 +141,7 @@ export class SignupUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
     }
 
     // Create an audit log entry for this operation.
-    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields: ['password'] });
+    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields: ['password', 'email_verification.code'] });
     const dataLog = {
       operation_id: this.deps.auditLogService.generateOperationId(),
       entity_type: collectionName,
@@ -148,7 +149,7 @@ export class SignupUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       entity_ref: `${input.data.username}`,
       actor_type: 'anonymous',
       action: 'signup',
-      module: 'user',
+      module: 'users',
       system_reason: 'insert data',
       changes: changes,
       metadata: {

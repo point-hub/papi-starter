@@ -12,9 +12,9 @@ import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
 
 export interface IInput {
+  ip: string
   authUser: IAuthUser
   userAgent: IUserAgent
-  ip: string
   filter: {
     _id: string
   }
@@ -62,7 +62,6 @@ export class UpdateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
     const userEntity = new UserEntity({
       username: input.data.username,
       name: input.data.name,
-      email: input.data.email,
       notes: input.data.notes,
       role_id: input.data.role_id,
     });
@@ -71,45 +70,10 @@ export class UpdateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       userEntity.trimmedUsername();
     }
 
-    if (userEntity.data.email) {
-      userEntity.trimmedEmail();
-    }
-
-
     // Validate uniqueness: single unique name field.
     const uniqueNameErrors = await this.deps.uniqueValidationService.validate(collectionName, { name: input.data.name }, { except: { _id: input.filter._id } });
     if (uniqueNameErrors) {
       return this.fail({ code: 422, message: 'Validation failed due to duplicate values.', errors: uniqueNameErrors });
-    }
-
-    // Validate uniqueness: single unique username field.
-    const uniqueUsernameErrors = await this.deps.uniqueValidationService.validate(
-      collectionName,
-      { trimmed_username: userEntity.data.trimmed_username },
-      {
-        except: { _id: input.filter._id },
-        replaceErrorAttribute: {
-          trimmed_username: 'username',
-        },
-      },
-    );
-    if (uniqueUsernameErrors) {
-      return this.fail({ code: 422, message: 'Validation failed due to duplicate values.', errors: uniqueUsernameErrors });
-    }
-
-    // Validate uniqueness: single unique email field.
-    const uniqueEmailErrors = await this.deps.uniqueValidationService.validate(
-      collectionName,
-      { trimmed_email: userEntity.data.trimmed_email },
-      {
-        except: { _id: input.filter._id },
-        replaceErrorAttribute: {
-          trimmed_email: 'email',
-        },
-      },
-    );
-    if (uniqueEmailErrors) {
-      return this.fail({ code: 422, message: 'Validation failed due to duplicate values.', errors: uniqueEmailErrors });
     }
 
     // Check if the record exists
@@ -140,7 +104,7 @@ export class UpdateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       actor_id: input.authUser._id,
       actor_name: input.authUser.username,
       action: 'update',
-      module: 'user',
+      module: 'users',
       system_reason: 'update data',
       user_reason: input.data?.update_reason,
       changes: changes,
@@ -156,7 +120,7 @@ export class UpdateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
 
     // Publish realtime notification event to the recipient’s channel.
     this.deps.ablyService.publish(`notifications:${input.authUser._id}`, 'logs:new', {
-      type: 'roles',
+      type: 'users',
       actor_id: input.authUser._id,
       recipient_id: input.authUser._id,
       is_read: false,

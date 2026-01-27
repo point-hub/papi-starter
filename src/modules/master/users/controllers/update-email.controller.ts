@@ -1,10 +1,15 @@
 import type { IController, IControllerInput } from '@point-hub/papi';
 
+import { EmailService } from '@/modules/_shared/services/email.service';
 import { SchemaUniqueValidationService } from '@/modules/_shared/services/schema-validation.service';
 import { UniqueValidationService } from '@/modules/_shared/services/unique-validation.service';
+import { AblyService } from '@/modules/ably/services/ably.service';
+import { AuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 
+import { RetrieveRepository } from '../repositories/retrieve.repository';
 import { UpdateRepository } from '../repositories/update.repository';
 import { updateEmailRules } from '../rules/update-email.rules';
+import { EmailVerificationService } from '../services/email-verification.service';
 import { UpdateEmailUseCase } from '../use-cases/update-email.use-case';
 
 export const updateEmailController: IController = async (controllerInput: IControllerInput) => {
@@ -18,17 +23,31 @@ export const updateEmailController: IController = async (controllerInput: IContr
     SchemaUniqueValidationService.validate(controllerInput.req['body'], updateEmailRules);
 
     // Initialize repositories and utilities
+    const retrieveRepository = new RetrieveRepository(controllerInput.dbConnection, { session });
     const updateRepository = new UpdateRepository(controllerInput.dbConnection, { session });
+    const auditLogService = new AuditLogService(controllerInput.dbConnection, { session });
     const uniqueValidationService = new UniqueValidationService(controllerInput.dbConnection, { session });
 
     // Initialize use case with dependencies
     const updateEmailUseCase = new UpdateEmailUseCase({
+      retrieveRepository,
       updateRepository,
+      ablyService: AblyService,
+      auditLogService,
+      emailService: EmailService,
+      emailVerificationService: EmailVerificationService,
       uniqueValidationService,
     });
 
     // Execute business logic
     const response = await updateEmailUseCase.handle({
+      authUser: controllerInput.req['authUser'],
+      userAgent: JSON.parse(
+        Array.isArray(controllerInput.req.headers['client-user-agent'])
+          ? controllerInput.req.headers['client-user-agent'][0]
+          : controllerInput.req.headers['client-user-agent'] ?? '{}',
+      ),
+      ip: controllerInput.req.ip ?? '',
       filter: { _id: controllerInput.req['params']['id'] },
       data: controllerInput.req['body'],
     });

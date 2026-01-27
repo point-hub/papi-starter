@@ -11,8 +11,8 @@ import type { IUpdateRepository } from '../repositories/update.repository';
 import type { IResetPasswordService } from '../services/reset-password.service';
 
 export interface IInput {
-  userAgent: IUserAgent
   ip: string
+  userAgent: IUserAgent
   data: {
     email: string
   }

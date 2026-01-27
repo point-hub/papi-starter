@@ -1,12 +1,12 @@
 import { BaseUseCase, type IUseCaseOutputFailed, type IUseCaseOutputSuccess } from '@point-hub/papi';
 
-import type { IAuthorizationService } from '@/modules/_shared/services/authorization.service';
+import type { IUniqueValidationService } from '@/modules/_shared/services/unique-validation.service';
 import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
 import type { IAblyService } from '@/modules/ably/services/ably.service';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
-import type { IAuthUser } from '@/modules/master/users/interface';
 
-import { collectionName, ExampleEntity } from '../entity';
+import { collectionName, UserEntity } from '../entity';
+import type { IAuthUser } from '../interface';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
 
@@ -18,7 +18,7 @@ export interface IInput {
     _id: string
   }
   data: {
-    update_reason?: string
+    username: string
   }
 }
 
@@ -27,7 +27,7 @@ export interface IDeps {
   retrieveRepository: IRetrieveRepository
   ablyService: IAblyService
   auditLogService: IAuditLogService
-  authorizationService: IAuthorizationService
+  uniqueValidationService: IUniqueValidationService
 }
 
 export interface ISuccessData {
@@ -36,23 +36,38 @@ export interface ISuccessData {
 }
 
 /**
- * Use case: Archive Example.
+ * Use case: Update a user's username.
  *
  * Responsibilities:
- * - Check whether the user is authorized to perform this action
- * - Check if the record exists
- * - Normalizes data (trim).
- * - Save the data to the database.
- * - Create an audit log entry for this operation.
- * - Publish realtime notification event to the recipient’s channel.
+ * - Check if user is exists.
+ * - Update the user password to the database.
  * - Return a success response.
  */
-export class ArchiveUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
+export class UpdateUsernameUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
   async handle(input: IInput): Promise<IUseCaseOutputSuccess<ISuccessData> | IUseCaseOutputFailed> {
-    // Check whether the user is authorized to perform this action
-    const isAuthorized = this.deps.authorizationService.hasAccess(input.authUser.role?.permissions, 'examples:update');
-    if (!isAuthorized) {
-      return this.fail({ code: 403, message: 'You do not have permission to perform this action.' });
+    // Check if user is exists.
+    const user = await this.deps.retrieveRepository.handle(input.filter._id);
+    if (!user) {
+      return this.fail({
+        code: 400,
+        message: 'User not found',
+      });
+    }
+
+    // Normalizes data (trim).
+    const userEntity = new UserEntity({
+      username: input.data.username,
+    });
+    userEntity.trimmedUsername();
+
+    // Validate uniqueness: single unique username field.
+    const uniqueUsernameErrors = await this.deps.uniqueValidationService.validate(
+      collectionName,
+      { trimmed_username: userEntity.data.trimmed_username },
+      { except: { _id: input.filter._id }, replaceErrorAttribute: { trimmed_username: 'username' } },
+    );
+    if (uniqueUsernameErrors) {
+      return this.fail({ code: 422, message: 'Validation failed due to duplicate values.', errors: uniqueUsernameErrors });
     }
 
     // Check if the record exists
@@ -61,31 +76,30 @@ export class ArchiveUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       return this.fail({ code: 404, message: 'Resource not found' });
     }
 
-    // Normalizes data (trim).
-    const exampleEntity = new ExampleEntity({
-      is_archived: true,
-    });
-
-    // Save the data to the database.
-    const response = await this.deps.updateRepository.handle(input.filter._id, exampleEntity.data);
-
-    // Create an audit log entry for this operation.
+    // Reject update when no fields have changed
     const changes = this.deps.auditLogService.buildChanges(
       retrieveResponse,
-      this.deps.auditLogService.mergeDefined(retrieveResponse, exampleEntity.data),
+      this.deps.auditLogService.mergeDefined(retrieveResponse, userEntity.data),
     );
+    if (changes.summary.fields?.length === 0) {
+      return this.fail({ code: 400, message: 'No changes detected. Please modify at least one field before saving.' });
+    }
+
+    // Update the user password to the database.
+    const response = await this.deps.updateRepository.handle(input.filter._id, userEntity.data);
+
+    // Create an audit log entry for this operation.
     const dataLog = {
       operation_id: this.deps.auditLogService.generateOperationId(),
       entity_type: collectionName,
       entity_id: input.filter._id,
-      entity_ref: `[${retrieveResponse.code}] ${retrieveResponse.name}`,
+      entity_ref: retrieveResponse.username!,
       actor_type: 'user',
       actor_id: input.authUser._id,
       actor_name: input.authUser.username,
-      action: 'archive',
-      module: 'examples',
+      action: 'update-username',
+      module: 'users',
       system_reason: 'update data',
-      user_reason: input.data?.update_reason,
       changes: changes,
       metadata: {
         ip: input.ip,
@@ -99,13 +113,13 @@ export class ArchiveUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
 
     // Publish realtime notification event to the recipient’s channel.
     this.deps.ablyService.publish(`notifications:${input.authUser._id}`, 'logs:new', {
-      type: 'examples',
+      type: 'users',
       actor_id: input.authUser._id,
       recipient_id: input.authUser._id,
       is_read: false,
       created_at: new Date(),
       entities: {
-        examples: input.filter._id,
+        roles: input.filter._id,
       },
       data: dataLog,
     });

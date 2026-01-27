@@ -33,7 +33,7 @@ export class RetrieveManyRepository implements IRetrieveManyRepository {
     pipeline.push(...this.pipeJoinRole());
     pipeline.push(...this.pipeQueryFilter(query));
     pipeline.push(...this.pipeProject());
-
+    console.log(query);
     const response = await this.database.collection(collectionName).aggregate<IRetrieveOutput>(pipeline, query, this.options);
 
     return {
@@ -76,6 +76,8 @@ export class RetrieveManyRepository implements IRetrieveManyRepository {
     BaseMongoDBQueryFilters.addRegexFilter(filters, 'email', query?.['search.email']);
     BaseMongoDBQueryFilters.addRegexFilter(filters, 'role.code', query?.['search.role.code']);
     BaseMongoDBQueryFilters.addRegexFilter(filters, 'role.name', query?.['search.role.name']);
+
+    BaseMongoDBQueryFilters.addBooleanFilter(filters, 'is_archived', query?.['search.is_archived']);
 
     return filters.length > 0 ? [{ $match: { $and: filters } }] : [];
   }

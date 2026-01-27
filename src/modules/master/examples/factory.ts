@@ -24,6 +24,7 @@ export default class ExampleFactory extends BaseFactory<IExample> {
       optional_composite_unique_2: faker.person.fullName(),
       xxx_composite_unique_1: faker.person.fullName(),
       xxx_composite_unique_2: faker.person.fullName(),
+      is_archived: false,
       created_at: new Date(),
       created_by_id: undefined, // injected
     } as IExample;

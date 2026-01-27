@@ -71,6 +71,8 @@ export class RetrieveManyRepository implements IRetrieveManyRepository {
     // Filter specific field
     BaseMongoDBQueryFilters.addExactFilter(filters, '_id', query?.['search._id']);
 
+    BaseMongoDBQueryFilters.addBooleanFilter(filters, 'is_archived', query?.['search.is_archived']);
+
     BaseMongoDBQueryFilters.addRegexFilter(filters, 'code', query?.['search.code']);
     BaseMongoDBQueryFilters.addRegexFilter(filters, 'name', query?.['search.name']);
     BaseMongoDBQueryFilters.addRegexFilter(filters, 'notes', query?.['search.notes']);

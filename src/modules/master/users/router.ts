@@ -19,6 +19,7 @@ const makeRouter = async ({ dbConnection }: IBaseAppInput) => {
     { method: 'post', path: '/:id/archive', middlewares: [authMiddleware], controller: controller.archiveController },
     { method: 'post', path: '/:id/restore', middlewares: [authMiddleware], controller: controller.restoreController },
     { method: 'post', path: '/:id/update-email', middlewares: [authMiddleware], controller: controller.updateEmailController },
+    { method: 'post', path: '/:id/update-username', middlewares: [authMiddleware], controller: controller.updateUsernameController },
     { method: 'post', path: '/:id/update-password', middlewares: [authMiddleware], controller: controller.updatePasswordController },
   ];
 

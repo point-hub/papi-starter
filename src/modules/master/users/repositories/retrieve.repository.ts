@@ -163,6 +163,7 @@ export class RetrieveRepository implements IRetrieveRepository {
           email: 1,
           role: 1,
           notes: 1,
+          password: 1,
           is_archived: 1,
           created_at: 1,
           created_by: 1,

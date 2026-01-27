@@ -11,9 +11,9 @@ import type { IDeleteRepository } from '../repositories/delete.repository';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 
 export interface IInput {
+  ip: string
   authUser: IAuthUser
   userAgent: IUserAgent
-  ip: string
   filter: {
     _id: string
   }
@@ -73,7 +73,7 @@ export class DeleteUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       actor_id: input.authUser._id,
       actor_name: input.authUser.username,
       action: 'delete',
-      module: 'role',
+      module: 'roles',
       system_reason: 'update data',
       user_reason: input.data?.delete_reason,
       changes: changes,

@@ -12,9 +12,9 @@ import { collectionName, RoleEntity } from '../entity';
 import type { ICreateRepository } from '../repositories/create.repository';
 
 export interface IInput {
+  ip: string
   authUser: IAuthUser
   userAgent: IUserAgent
-  ip: string
   data: {
     code: string
     name: string
@@ -64,6 +64,7 @@ export class CreateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       name: input.data.name,
       notes: input.data.notes,
       permissions: input.data.permissions,
+      is_archived: false,
       created_at: new Date(),
       created_by_id: input.authUser._id,
     });
@@ -97,7 +98,7 @@ export class CreateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
       actor_id: input.authUser._id,
       actor_name: input.authUser.username,
       action: 'create',
-      module: 'role',
+      module: 'roles',
       system_reason: 'insert data',
       changes: changes,
       metadata: {
