@@ -33,7 +33,7 @@ export class RetrieveManyRepository implements IRetrieveManyRepository {
     pipeline.push(...this.pipeJoinRole());
     pipeline.push(...this.pipeQueryFilter(query));
     pipeline.push(...this.pipeProject());
-    console.log(query);
+
     const response = await this.database.collection(collectionName).aggregate<IRetrieveOutput>(pipeline, query, this.options);
 
     return {

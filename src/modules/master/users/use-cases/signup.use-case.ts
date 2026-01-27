@@ -6,7 +6,7 @@ import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 import type { IRetrieveManyRepository as IRoleRetrieveManyRepository } from '@/modules/master/roles/repositories/retrieve-many.repository';
 
-import { collectionName, UserEntity } from '../entity';
+import { collectionName, redactFields, UserEntity } from '../entity';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { ISignupRepository } from '../repositories/signup.repository';
 import type { IEmailVerificationService } from '../services/email-verification.service';
@@ -141,7 +141,7 @@ export class SignupUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
     }
 
     // Create an audit log entry for this operation.
-    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields: ['password', 'email_verification.code'] });
+    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields });
     const dataLog = {
       operation_id: this.deps.auditLogService.generateOperationId(),
       entity_type: collectionName,

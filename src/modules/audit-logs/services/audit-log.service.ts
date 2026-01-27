@@ -1,8 +1,6 @@
 import { type IDatabase } from '@point-hub/papi';
 import { randomUUIDv7 } from 'bun';
 
-type FieldPath<T> = keyof T | `${string}.${string}`;
-
 export interface IData {
   activity_log_id?: string
   operation_id: string
@@ -74,8 +72,8 @@ export interface IAuditLogService {
     before: Partial<T>,
     after: Partial<T>,
     options?: {
-      ignoreFields?: FieldPath<T>[]
-      redactFields?: FieldPath<T>[]
+      ignoreFields?: string[]
+      redactFields?: string[]
       redactValue?: unknown
     },
   ): IBuildChangesResult<T>
@@ -165,50 +163,36 @@ export class AuditLogService implements IAuditLogService {
     return randomUUIDv7();
   }
 
-  private redactSnapshot<T extends object>(
-    data: Partial<T>,
-    redact: Set<keyof T>,
-    redactValue: unknown = '[REDACTED]',
-  ): Partial<T> {
-    const result: Partial<T> = { ...data };
-
-    for (const key of redact) {
-      if (key in result) {
-        result[key] = redactValue as T[keyof T];
-      }
-    }
-
-    return result;
-  }
-
   buildChanges<T extends object>(
     before: Partial<T>,
     after: Partial<T>,
     options?: {
-      ignoreFields?: FieldPath<T>[]
-      redactFields?: FieldPath<T>[]
+      ignoreFields?: string[]
+      redactFields?: string[]
       redactValue?: unknown
     },
   ): IBuildChangesResult<T> {
-    const ignore = new Set<string>((options?.ignoreFields ?? []).map(String));
-    const redact = new Set<string>((options?.redactFields ?? []).map(String));
+    const ignore = new Set(options?.ignoreFields ?? []);
+    const redact = new Set(options?.redactFields ?? []);
     const redactValue = options?.redactValue ?? '[REDACTED]';
 
-    const fields = new Set<string>();
-
+    // Flatten objects for easy comparison
     const flatBefore = this.isPlainObject(before)
       ? this.flattenObject(before as Record<string, unknown>)
       : {};
-
     const flatAfter = this.isPlainObject(after)
       ? this.flattenObject(after as Record<string, unknown>)
       : {};
 
+    // Collect all keys from both objects
     const allKeys = new Set([
       ...Object.keys(flatBefore),
       ...Object.keys(flatAfter),
     ]);
 
+    const changedFields: string[] = [];
+
+    // Compare raw values (before redaction)
     for (const key of allKeys) {
       if (ignore.has(key)) continue;
 
@@ -216,18 +200,29 @@ export class AuditLogService implements IAuditLogService {
       const afterValue = flatAfter[key];
 
       if (beforeValue !== afterValue) {
-        fields.add(key);
+        changedFields.push(key);
       }
     }
 
+    // Redact snapshot (flattened)
+    const redactSnapshot = (flat: Record<string, unknown>) => {
+      const result: Record<string, unknown> = { ...flat };
+      for (const key of redact) {
+        if (key in result) {
+          result[key] = redactValue;
+        }
+      }
+      return result;
+    };
+
     return {
       summary: {
-        fields: Array.from(fields),
-        count: fields.size,
+        fields: changedFields,
+        count: changedFields.length,
       },
       snapshot: {
-        before: this.redactSnapshot(flatBefore, redact, redactValue) as Partial<T>,
-        after: this.redactSnapshot(flatAfter, redact, redactValue) as Partial<T>,
+        before: redactSnapshot(flatBefore) as Partial<T>,
+        after: redactSnapshot(flatAfter) as Partial<T>,
       },
     };
   }

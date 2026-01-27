@@ -4,7 +4,7 @@ import type { IEmailService } from '@/modules/_shared/services/email.service';
 import type { IUserAgent } from '@/modules/_shared/types/user-agent.type';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 
-import { collectionName, UserEntity } from '../entity';
+import { collectionName, redactFields, UserEntity } from '../entity';
 import type { IIdentityMatcherRepository } from '../repositories/identity-matcher.repository';
 import type { IRetrieveRepository } from '../repositories/retrieve.repository';
 import type { IUpdateRepository } from '../repositories/update.repository';
@@ -38,7 +38,9 @@ export interface ISuccessData {
  * Responsibilities:
  * - Retrieve the user by email.
  * - Generate a new email verification link and code.
+ * - Normalizes data (trim).
  * - Update the user's record with the verification data.
+ * - Create an audit log entry for this operation.
  * - Send an email containing the verification link and code.
  * - Return a success response.
  */
@@ -72,7 +74,7 @@ export class SendEmailVerificationUseCase extends BaseUseCase<IInput, IDeps, ISu
     const response = await this.deps.updateRepository.handle(users.data[0]._id, userEntity.data);
 
     // Create an audit log entry for this operation.
-    const changes = this.deps.auditLogService.buildChanges(retrieveResponse, userEntity.data, { redactFields: ['password', 'email_verification.code'] });
+    const changes = this.deps.auditLogService.buildChanges(retrieveResponse, userEntity.data, { redactFields });
     const dataLog = {
       operation_id: this.deps.auditLogService.generateOperationId(),
       entity_type: collectionName,

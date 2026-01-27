@@ -60,7 +60,6 @@ export class UpdatePasswordUseCase extends BaseUseCase<IInput, IDeps, ISuccessDa
     }
 
     // Verify current password using the password service.
-    console.log(input.data.current_password, user);
     if (!(await this.deps.passwordService.verify(input.data.current_password, user.password!))) {
       return this.fail({
         code: 422,

@@ -1,6 +1,12 @@
 import { type IUser } from './interface';
 
 export const collectionName = 'users';
+export const redactFields = [
+  'password',
+  'email_verification.code',
+  'new_email_verification.code',
+  'request_password.code',
+];
 
 export class UserEntity {
   constructor(public data: IUser) { }

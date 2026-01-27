@@ -8,7 +8,7 @@ import type { IAblyService } from '@/modules/ably/services/ably.service';
 import type { IAuditLogService } from '@/modules/audit-logs/services/audit-log.service';
 import type { IAuthUser } from '@/modules/master/users/interface';
 
-import { collectionName, UserEntity } from '../entity';
+import { collectionName, redactFields, UserEntity } from '../entity';
 import type { ICreateRepository } from '../repositories/create.repository';
 import type { IEmailVerificationService } from '../services/email-verification.service';
 import type { IPasswordService } from '../services/password.service';
@@ -132,7 +132,7 @@ export class CreateUseCase extends BaseUseCase<IInput, IDeps, ISuccessData> {
     );
 
     // Create an audit log entry for this operation.
-    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields: ['password', 'email_verification.code'] });
+    const changes = this.deps.auditLogService.buildChanges({}, userEntity.data, { redactFields });
     const dataLog = {
       operation_id: this.deps.auditLogService.generateOperationId(),
       entity_type: collectionName,
