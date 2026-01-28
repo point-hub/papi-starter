@@ -38,7 +38,7 @@ export const seed = async (dbConnection: IDatabase, options: Record<string, unkn
 
   console.info('[seed] users');
   const username = 'admin';
-  const password = 'admin123';
+  const password = 'Admin123!';
   const userFactory = new UserFactory(dbConnection, options);
   userFactory.state({
     name: username,
