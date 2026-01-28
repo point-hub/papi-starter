@@ -21,12 +21,12 @@
  */
 export const getPermissions = (): string[] => {
   const resources = {
-    'master': ['read'],
-    'users': ['create', 'read', 'update', 'delete'],
-    'roles': ['create', 'read', 'update', 'delete'],
-    'examples': ['create', 'read', 'update', 'delete'],
-    'administrator': ['read'],
-    'audit-logs': ['read'],
+    'master': ['module'],
+    'users': ['module', 'read', 'create', 'update', 'delete'],
+    'roles': ['module', 'read', 'create', 'update', 'delete'],
+    'examples': ['module', 'read', 'create', 'update', 'delete'],
+    'administrator': ['module'],
+    'audit-logs': ['module', 'read', 'create', 'update', 'delete'],
   };
 
   return Object.entries(resources).flatMap(([resource, actions]) =>
